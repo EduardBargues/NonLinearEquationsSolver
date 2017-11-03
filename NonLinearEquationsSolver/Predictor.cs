@@ -5,48 +5,50 @@ namespace NonLinearEquationsSolver
 {
     public class Predictor
     {
-        public bool Convergence { get; set; } = true;
-
-        public Tuple<double, Vector<double>> Predict(IMultiDimensionalFunction function,
-            Vector<double> force,
-            PredictorInput input)
+        public IterationPhaseOutput Predict(PredictorInput input)
         {
-            Vector<double> reaction = function.GetImage(input.Displacement);
-            Matrix<double> stiffnessMatrix = function.GetTangentMatrix(input.Displacement);
-            Vector<double> equilibrium = input.Lambda * force - reaction;
-            Vector<double> incDisplacement = stiffnessMatrix.Solve(equilibrium);
+            Vector<double> reaction = input.Function.GetImage(input.Displacement);
+            Matrix<double> stiffnessMatrix = input.Function.GetTangentMatrix(input.Displacement);
+            Vector<double> equilibrium = input.Lambda * input.Force - reaction;
 
-            double lambda = input.Lambda;
-            if (input.UseArcLength)
-            {
-                Vector<double> incDisplacementTangent = stiffnessMatrix.Solve(force);
-                double bergam = GetBergamParameter(input.ReferenceStiffness, force, incDisplacementTangent);
-                double incLambda = Math.Sign(bergam) *
-                    GetLambdaIncrement(force, input.ArcLengthRadius, input.Beta, incDisplacementTangent);
-                lambda += incLambda;
-                incDisplacement = incLambda * incDisplacementTangent;
-            }
+            Vector<double> incDispTangent = stiffnessMatrix.Solve(input.Force);
+            double bergam = GetBergamParameter(input.ReferenceStiffness, input.Force, incDispTangent);
+            double incLambda = GetLambdaIncrement(input, incDispTangent) * Math.Sign(bergam);
 
-            return new Tuple<double, Vector<double>>(lambda, input.Displacement + incDisplacement);
+            Vector<double> incDispEquilibrium = stiffnessMatrix.Solve(equilibrium);
+            Vector<double> incDisplacement = incLambda * incDispTangent + incDispEquilibrium;
+
+            return new IterationPhaseOutput(incLambda, incDisplacement);
         }
-
-        private double GetBergamParameter(double referenceStiffness, Vector<double> forceVector, Vector<double> displacement)
+        private double GetBergamParameter(double referenceStiffness, 
+                                          Vector<double> forceVector, 
+                                          Vector<double> displacement)
         {
             return Math.Abs(referenceStiffness / forceVector.DotProduct(displacement));
         }
-        private double GetLambdaIncrement(Vector<double> force, double radius, double beta, Vector<double> displacement)
+        public double GetLambdaIncrement(PredictorInput input, 
+                                         Vector<double> incrementDisplacement)
         {
-            return radius / Math.Sqrt(Math.Pow(displacement.Norm(2), 2) + Math.Pow(beta, 2) * Math.Pow(force.Norm(2), 2));
-        }
-    }
+            double increment;
+            switch (input.Scheme)
+            {
+                case IterationScheme.Standard:
+                    increment = input.LambdaIncrement;
+                    break;
+                case IterationScheme.ArcLength:
+                    double dispDotProduct = incrementDisplacement.DotProduct(incrementDisplacement);
+                    double forceDotProduct = input.Force.DotProduct(input.Force);
+                    increment = input.ArcLengthRadius / Math.Sqrt(dispDotProduct + Math.Pow(input.Beta, 2) * forceDotProduct);
+                    break;
+                case IterationScheme.WorkControl:
+                    double dispForceDotProduct = input.Force.DotProduct(incrementDisplacement);
+                    increment = Math.Sqrt(input.ArcLengthRadius / dispForceDotProduct);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
-    public class PredictorInput
-    {
-        public double Lambda { get; set; }
-        public Vector<double> Displacement { get; set; }
-        public bool UseArcLength { get; set; }
-        public double ReferenceStiffness { get; set; }
-        public double ArcLengthRadius { get; set; }
-        public double Beta { get; set; }
+            return Math.Min(increment, Math.Abs(input.LastLambda - input.Lambda));
+        }
     }
 }

@@ -33,16 +33,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>packages\morelinq.2.1.0\lib\net35\MoreLinq.dll</HintPath>
+    <Reference Include="MoreLinq, Version=2.8.21218.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>packages\morelinq.2.8.0\lib\net40\MoreLinq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,17 +55,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorrectorInput.cs" />
     <Compile Include="Corrector.cs" />
     <Compile Include="IDisplacementChooser.cs" />
-    <Compile Include="IFunctionalSolver.cs" />
-    <Compile Include="IMultiDimensionalFunction.cs" />
-    <Compile Include="IUniDimensionalFunction.cs" />
+    <Compile Include="ISolver.cs" />
+    <Compile Include="IFunction.cs" />
+    <Compile Include="IterationScheme.cs" />
+    <Compile Include="IterationPhaseOutput.cs" />
+    <Compile Include="NonConvergenceReason.cs" />
     <Compile Include="Predictor.cs" />
+    <Compile Include="PredictorInput.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestoringMethod.cs" />
     <Compile Include="SolverInputs.cs" />
-    <Compile Include="StructuralSolver.cs" />
+    <Compile Include="Solver.cs" />
+    <Compile Include="IterationReport.cs" />
+    <Compile Include="Tolerances.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

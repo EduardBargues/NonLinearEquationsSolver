@@ -2,72 +2,112 @@
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace NonLinearEquationsSolver
 {
     public class Corrector
     {
-        public bool Convergence { get; set; }
-        public event Action ArcLengthRadiusTooBig;
-        public Tuple<double, Vector<double>> Correct(IMultiDimensionalFunction function, Vector<double> force, CorrectorInput input)
+        public IterationReport Correct(CorrectorInput input, out IterationPhaseOutput result)
         {
-            int numIter = 0;
-            double lambda = input.Lambda;
-            var displacement = input.Displacement;
-            Vector<double> reaction = function.GetImage(displacement);
+            IterationReport report = null;
+            result = null;
 
-            List<double> errors = GetErrors(force, reaction, lambda, displacement, displacement);
-            bool keepGoing = numIter <= input.MaximumIterations && !ConvergenceAchieved(errors, input.Tolerances);
+            double firstLambda = input.PredictionPhaseLambda;
+            Vector<double> firstDisplacement = input.PredictionPhaseDisplacement;
+            double lambda = firstLambda;
+            Vector<double> displacement = firstDisplacement;
 
-            IDisplacementChooser chooser = new RestoringMethod();
-            while (keepGoing)
+            Vector<double> reaction = input.Function.GetImage(displacement);
+            Vector<double> equilibrium = lambda * input.Force - reaction;
+            for (int iteration = 0; iteration < input.MaxIterations; iteration++)
             {
-                Vector<double> displacementBefore = displacement;
-                Matrix<double> stiffnessMatrix = function.GetTangentMatrix(displacement);
-                reaction = function.GetImage(displacement);
-                Vector<double> equilibrium = lambda * force - reaction;
-                Vector<double> dVr = stiffnessMatrix.Solve(equilibrium);
-
-                if (input.UseArcLength)
+                Matrix<double> stiffnessMatrix = input.Function.GetTangentMatrix(displacement);
+                Vector<double> incTangentDisplacement = stiffnessMatrix.Solve(input.Force);
+                Vector<double> incEquilibriumDisplacement = stiffnessMatrix.Solve(equilibrium);
+                IterationPhaseOutput correction;
+                NonConvergenceReason reason = GetCorrection(input: input,
+                                                                displacement: displacement,
+                                                                lambda: lambda,
+                                                                dut: incTangentDisplacement,
+                                                                dur: incEquilibriumDisplacement,
+                                                                result: out correction);
+                bool correctionSucceeded = reason == NonConvergenceReason.None;
+                if (correctionSucceeded)
                 {
-                    Vector<double> dVt = stiffnessMatrix.Solve(force);
-                    List<Tuple<double, Vector<double>>> candidates = GetCandidates(force, dVt, dVr, input.Dv, input.DLambda, input.Beta, input.ArcLengthRadius);
-                    Tuple<double, Vector<double>> bestCandidate = chooser.Choose(function, force, displacement, lambda, candidates);
-                    lambda += bestCandidate.Item1;
-                    displacement += bestCandidate.Item1 * dVt;
+                    displacement += correction.IncrementDisplacement;
+                    lambda += correction.IncrementLambda;
+                    reaction = input.Function.GetImage(displacement);
+                    equilibrium = lambda * input.Force - reaction;
+                    Tolerances errors = GetErrors(force: input.Force,
+                        reaction: reaction,
+                        lambda: lambda,
+                        displacement: displacement,
+                        incrementDisplacement: correction.IncrementDisplacement);
+                    bool convergence = CheckConvergence(errors, input.Tolerances);
+                    if (convergence)
+                    {
+                        report = new IterationReport(true, NonConvergenceReason.None);
+                        result = new IterationPhaseOutput(incrementLambda: lambda - firstLambda,
+                                                          incrementDisplacement: displacement - firstDisplacement);
+                        break;
+                    }
                 }
-                displacement += dVr;
-
-                errors = GetErrors(force, reaction, input.Lambda, input.Displacement, displacementBefore);
-                numIter++;
-                Convergence = ConvergenceAchieved(errors, input.Tolerances);
-                keepGoing = numIter <= input.MaximumIterations && !Convergence;
+                else
+                {
+                    report = new IterationReport(false, reason);
+                    break;
+                }
             }
 
-            return new Tuple<double, Vector<double>>(lambda, displacement);
+            if (report == null ||
+                report.Convergence == false)
+                report = new IterationReport(false, NonConvergenceReason.MaxIterationsReached);
+
+            return report;
         }
 
-        private List<Tuple<double, Vector<double>>> GetCandidates(Vector<double> fr,
-            Vector<double> dVt,
-            Vector<double> dVr,
-            Vector<double> Dv,
-            double DLambda,
-            double beta,
-            double DL)
+        private NonConvergenceReason GetCorrection(CorrectorInput input,
+                                                   Vector<double> displacement,
+                                                   double lambda,
+                                                   Vector<double> dut,
+                                                   Vector<double> dur,
+                                                   out IterationPhaseOutput result)
         {
-            double frNormSquare = fr.DotProduct(fr);
-            double betaSquare = Math.Pow(beta, 2);
+            NonConvergenceReason reason = NonConvergenceReason.None;
 
-            double a = dVt.DotProduct(dVt) +
+            if (input.UseArcLength)
+            {
+                List<IterationPhaseOutput> candidates = GetCandidates(input, dut, dur);
+                IDisplacementChooser chooser = new RestoringMethod();
+                result = chooser.Choose(input.Function, input.Force, displacement, lambda, candidates);
+            }
+            else
+                result = new IterationPhaseOutput(0, dur);
+
+            return reason;
+        }
+
+        private List<IterationPhaseOutput> GetCandidates(CorrectorInput input,
+                                                         Vector<double> dut,
+                                                         Vector<double> dur)
+        {
+            double frNormSquare = input.Force.DotProduct(input.Force);
+            double betaSquare = Math.Pow(input.Beta, 2);
+
+            double a = dut.DotProduct(dut) +
                 betaSquare * frNormSquare;
-            double b = 2 * dVr.DotProduct(dVt) +
-                2 * Dv.DotProduct(dVt) +
-                2 * DLambda * betaSquare * frNormSquare;
-            double c = -Math.Pow(DL, 2) +
-                Dv.DotProduct(Dv) +
-                dVr.DotProduct(dVr) +
-                2 * Dv.DotProduct(dVr) +
-                Math.Pow(DLambda, 2) * betaSquare * frNormSquare;
+
+            double b = 2 * dur.DotProduct(dut) +
+                2 * input.PredictionPhaseIncrementDisplacement.DotProduct(dut) +
+                2 * input.PredictionPhaseIncrementLambda * betaSquare * frNormSquare;
+
+            double c = -Math.Pow(input.ArcLengthRadius, 2) +
+                       input.PredictionPhaseIncrementDisplacement.DotProduct(input.PredictionPhaseIncrementDisplacement) +
+                dur.DotProduct(dur) +
+                2 * input.PredictionPhaseIncrementDisplacement.DotProduct(dur) +
+                Math.Pow(input.PredictionPhaseIncrementLambda, 2) * betaSquare * frNormSquare;
+
             double control = Math.Pow(b, 2) - 4 * a * c;
 
             if (control < 0)
@@ -78,46 +118,29 @@ namespace NonLinearEquationsSolver
                 (-b + Math.Sqrt(control))/(2*a),
                 (-b - Math.Sqrt(control))/(2*a)
             }
-            .Select(dlambda => new Tuple<double, Vector<double>>(dlambda, dVr + dlambda * dVt))
+            .Select(dlambda => new IterationPhaseOutput(dlambda, dur + dlambda * dut))
             .ToList();
         }
 
         // HELPER METHODS
-        private bool ConvergenceAchieved(List<double> errors, List<double> tolerances)
+        private bool CheckConvergence(Tolerances errors, Tolerances tolerances)
         {
-            bool convergence = true;
-            for (int i = 0; i < errors.Count; i++)
-            {
-                convergence = errors[i] <= tolerances[i];
-                if (!convergence)
-                    break;
-            }
-            return convergence;
+            return errors.Displacement <= tolerances.Displacement &&
+                   errors.Equilibrium <= tolerances.Equilibrium &&
+                   errors.Work <= tolerances.Work;
         }
-
-        private List<double> GetErrors(Vector<double> force, Vector<double> reaction, double lambda, Vector<double> displacement, Vector<double> displacementBefore)
+        private Tolerances GetErrors(Vector<double> force,
+                                       Vector<double> reaction,
+                                       double lambda,
+                                       Vector<double> displacement,
+                                       Vector<double> incrementDisplacement)
         {
             Vector<double> equilibrium = lambda * force - reaction;
-            return new List<double>
-            {
-                (displacement - displacementBefore).Norm(2) / displacement.Norm(2),
-                equilibrium.Norm(2) / force.Norm(2),
-                Math.Abs(displacement.DotProduct(equilibrium) / displacement.DotProduct(force))
-            };
+            return new Tolerances(
+                displacement: incrementDisplacement.Norm(2) / displacement.Norm(2),
+                equilibrium: equilibrium.Norm(2) / force.Norm(2),
+                work: Math.Abs(displacement.DotProduct(equilibrium) / displacement.DotProduct(force)),
+                incrementalForce: 0);
         }
-    }
-
-    public class CorrectorInput
-    {
-        public double Lambda { get; set; }
-        public Vector<double> Displacement { get; set; }
-        public double DLambda { get; set; }
-        public Vector<double> Dv { get; set; }
-        public double Beta { get; set; }
-        public bool UseArcLength { get; set; }
-        public double ArcLengthRadius { get; set; }
-        public int MaxArcLengthIncrements { get; set; }
-        public List<double> Tolerances { get; set; }
-        public int MaximumIterations { get; set; }
     }
 }

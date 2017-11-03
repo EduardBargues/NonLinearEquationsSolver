@@ -6,10 +6,10 @@ namespace NonLinearEquationsSolver
 {
     public interface IDisplacementChooser
     {
-        Tuple<double, Vector<double>> Choose(IMultiDimensionalFunction function,
-            Vector<double> fr,
-            Vector<double> displacementAfterPredictionPhase,
-            double lambda,
-            List<Tuple<double, Vector<double>>> candidates);
+        IterationPhaseOutput Choose(IFunction function,
+                                             Vector<double> fr,
+                                             Vector<double> displacementAfterPredictionPhase,
+                                             double lambda,
+                                             List<IterationPhaseOutput> candidates);
     }
 }

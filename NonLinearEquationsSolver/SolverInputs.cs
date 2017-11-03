@@ -1,20 +1,27 @@
-﻿namespace NonLinearEquationsSolver
+﻿using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Complex;
+
+namespace NonLinearEquationsSolver
 {
-    public enum SolverInputs
+    public class SolverInputs
     {
-        FirstLambdaValue,
-        LastLambdaValue,
-        MaximumNumberOfIncrements,
-        Beta,
-        ArcLengthRadius,
-        ChangeArcLengthRadius,
-        UseArcLength,
-        MaximumNumberOfIterations,
-        Tolerances,
-        InitialApproximation,
-        //ReferenceStiffness,
-        //Displacement,
-        //Lambda,
-        MaximumNumberOfArcLengthAdjustments
+        public IFunction Function { get; set; }
+        public Vector<double> Force { get; set; }
+        public double FirstLambdaValue { get; set; }
+        public double LastLambdaValue { get; set; }
+
+        public double Beta { get; set; }
+
+        public int MaxIterations { get; set; }
+        public int MaxIncrements { get; set; }
+
+        public Tolerances Tolerances { get; set; }
+        public Vector<double> InitialApproximation { get; set; }
+
+        public bool UseArcLength { get; set; }
+        public double ArcLengthRadius { get; set; }
+        public bool ChangeArcLengthRadius { get; set; }
+        public int MaxArcLengthAdjustments { get; set; }
     }
 }

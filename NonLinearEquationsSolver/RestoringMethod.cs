@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using MoreLinq;
 
@@ -7,14 +8,21 @@ namespace NonLinearEquationsSolver
 {
     public class RestoringMethod : IDisplacementChooser
     {
-        public Tuple<double, Vector<double>> Choose(IMultiDimensionalFunction function,
+        public IterationPhaseOutput Choose(IFunction function,
             Vector<double> fr,
             Vector<double> displacementAfterPredictionPhase,
             double lambda,
-            List<Tuple<double, Vector<double>>> candidates)
+            List<IterationPhaseOutput> candidates)
         {
-            return candidates
-                .MinBy(candidate => (lambda * fr - function.GetImage(displacementAfterPredictionPhase + candidate.Item2)).Norm(2));
+            return candidates.Any()
+                ? candidates.MinBy(candidate =>
+                    {
+                        Vector<double> image =
+                            function.GetImage(displacementAfterPredictionPhase + candidate.IncrementDisplacement);
+                        Vector<double> equilibriumVector = lambda * fr - image;
+                        return equilibriumVector.Norm(2);
+                    })
+                : null;
         }
     }
 }
