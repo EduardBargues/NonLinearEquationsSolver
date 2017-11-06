@@ -54,6 +54,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Function1.cs" />
+    <Compile Include="Function2.cs" />
+    <Compile Include="Function3.cs" />
+    <Compile Include="Function4.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,8 +2,8 @@
 {
     public enum NonConvergenceReason
     {
-        Unknown,
         None,
+        Unknown,
         ArcLengthTooBig,
         MaxIncrementsReached,
         MaxIterationsReached,

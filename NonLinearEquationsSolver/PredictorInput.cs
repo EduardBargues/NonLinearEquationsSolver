@@ -20,7 +20,6 @@ namespace NonLinearEquationsSolver
         public double ReferenceStiffness { get; set; }
         public double ArcLengthRadius { get; set; }
         public double Beta { get; set; }
-
-        
+        public bool DoIterationReport { get; set; }
     }
 }

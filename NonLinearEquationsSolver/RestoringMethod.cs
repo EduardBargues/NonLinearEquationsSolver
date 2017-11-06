@@ -8,11 +8,11 @@ namespace NonLinearEquationsSolver
 {
     public class RestoringMethod : IDisplacementChooser
     {
-        public IterationPhaseOutput Choose(IFunction function,
+        public IterationPhaseReport Choose(IFunction function,
             Vector<double> fr,
             Vector<double> displacementAfterPredictionPhase,
             double lambda,
-            List<IterationPhaseOutput> candidates)
+            List<IterationPhaseReport> candidates)
         {
             return candidates.Any()
                 ? candidates.MinBy(candidate =>

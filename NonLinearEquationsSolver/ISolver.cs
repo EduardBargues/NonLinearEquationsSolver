@@ -5,6 +5,6 @@ namespace NonLinearEquationsSolver
 {
     public interface ISolver
     {
-        IterationReport Solve(SolverInputs props, out Vector<double> solution);
+        IterationPhaseReport Solve(ProblemDefinition problem, out Vector<double> solution);
     }
 }

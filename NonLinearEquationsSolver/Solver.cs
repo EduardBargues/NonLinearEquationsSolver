@@ -6,28 +6,28 @@ namespace NonLinearEquationsSolver
 {
     public class Solver : ISolver
     {
-        public IterationReport Solve(SolverInputs props, out Vector<double> solution)
+        public IterationPhaseReport Solve(ProblemDefinition problem, out Vector<double> solution)
         {
             solution = null;
-            IterationReport report = null;
+            IterationPhaseReport phaseReport = null;
 
-            Vector<double> displacement = props.InitialApproximation;
-            Matrix<double> firstStiffnessMatrix = props.Function.GetTangentMatrix(displacement);
-            Vector<double> firstSolution = firstStiffnessMatrix.Solve(props.Force);
+            Vector<double> displacement = problem.InitialApproximation;
+            Matrix<double> firstStiffnessMatrix = problem.Function.GetTangentMatrix(displacement);
+            Vector<double> firstSolution = firstStiffnessMatrix.Solve(problem.Force);
 
             Predictor predictor = new Predictor();
-            PredictorInput predictorInput = GetPredictorInput(props, firstSolution);
+            PredictorInput predictorInput = GetPredictorInput(problem, firstSolution);
 
             Corrector corrector = new Corrector();
-            CorrectorInput correctorInput = GetCorrectorInput(props);
-            double lambda = props.FirstLambdaValue;
+            CorrectorInput correctorInput = GetCorrectorInput(problem);
+            double lambda = problem.FirstLambdaValue;
 
-            for (int increment = 0; increment < props.MaxIncrements; increment++)
+            for (int increment = 0; increment < problem.MaxIncrements; increment++)
             {
                 // PREDICTION PHASE
                 predictorInput.Displacement = displacement;
                 predictorInput.Lambda = lambda;
-                IterationPhaseOutput incPrediction = predictor.Predict(predictorInput);
+                IterationPhaseReport incPrediction = predictor.Predict(predictorInput);
                 displacement += incPrediction.IncrementDisplacement;
                 lambda += incPrediction.IncrementLambda;
 
@@ -37,39 +37,38 @@ namespace NonLinearEquationsSolver
                 correctorInput.PredictionPhaseIncrementLambda = incPrediction.IncrementLambda;
                 correctorInput.PredictionPhaseIncrementDisplacement = incPrediction.IncrementDisplacement;
 
-                IterationPhaseOutput incCorrection;
-                var correctionReport = corrector.Correct(correctorInput, out incCorrection);
-                if (correctionReport.Convergence)
+                IterationPhaseReport incCorrection = corrector.Correct(correctorInput);
+                if (incCorrection.Convergence)
                 {
                     displacement += incCorrection.IncrementDisplacement;
                     lambda += incCorrection.IncrementLambda;
                     // CHECK CONVERGENCE
-                    bool convergence = Math.Abs(lambda - props.LastLambdaValue) <= props.Tolerances.IncrementalForce;
+                    bool convergence = Math.Abs(lambda - problem.LastLambdaValue) <= problem.Tolerances.IncrementalForce;
                     if (convergence)
                     {
                         solution = displacement;
-                        report = new IterationReport(true, NonConvergenceReason.None);
+                        phaseReport = new IterationPhaseReport(true, NonConvergenceReason.None);
                         break;
                     }
-                    bool maxIncrementsReached = increment <= props.MaxIncrements;
+                    bool maxIncrementsReached = increment <= problem.MaxIncrements;
                     if (maxIncrementsReached)
                     {
-                        report = new IterationReport(convergence: false,
+                        phaseReport = new IterationPhaseReport(convergence: false,
                             reason: NonConvergenceReason.MaxIncrementsReached);
                         break;
                     }
                 }
                 else
                 {
-                    report = correctionReport;
+                    phaseReport = correctionReport;
                     break;
                 }
             }
 
-            return report;
+            return phaseReport;
         }
 
-        private static CorrectorInput GetCorrectorInput(SolverInputs props)
+        private static CorrectorInput GetCorrectorInput(ProblemDefinition props)
         {
             CorrectorInput ci = new CorrectorInput
             {
@@ -80,12 +79,13 @@ namespace NonLinearEquationsSolver
                 ArcLengthRadius = props.ArcLengthRadius,
                 Beta = props.Beta,
                 Tolerances = props.Tolerances,
-                MaxArcLengthAdjustments = props.MaxArcLengthAdjustments
+                MaxArcLengthAdjustments = props.MaxArcLengthAdjustments,
+                DoIterationReport = props.DoIterationReport,
             };
             return ci;
         }
 
-        private static PredictorInput GetPredictorInput(SolverInputs props, Vector<double> firstSolution)
+        private static PredictorInput GetPredictorInput(ProblemDefinition props, Vector<double> firstSolution)
         {
             return new PredictorInput
             {
@@ -97,6 +97,7 @@ namespace NonLinearEquationsSolver
                 LastLambda = props.LastLambdaValue,
                 ArcLengthRadius = props.ArcLengthRadius,
                 ReferenceStiffness = props.Force.DotProduct(firstSolution),
+                DoIterationReport = props.DoIterationReport,
             };
         }
     }

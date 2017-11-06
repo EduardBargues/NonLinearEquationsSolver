@@ -5,7 +5,7 @@ namespace NonLinearEquationsSolver
 {
     public class Predictor
     {
-        public IterationPhaseOutput Predict(PredictorInput input)
+        public IterationPhaseReport Predict(PredictorInput input)
         {
             Vector<double> reaction = input.Function.GetImage(input.Displacement);
             Matrix<double> stiffnessMatrix = input.Function.GetTangentMatrix(input.Displacement);
@@ -18,15 +18,27 @@ namespace NonLinearEquationsSolver
             Vector<double> incDispEquilibrium = stiffnessMatrix.Solve(equilibrium);
             Vector<double> incDisplacement = incLambda * incDispTangent + incDispEquilibrium;
 
-            return new IterationPhaseOutput(incLambda, incDisplacement);
+            IterationPhaseReport phaseReport = new IterationPhaseReport(incLambda, incDisplacement);
+            if (input.DoIterationReport)
+            {
+                phaseReport.BergamParameter = bergam;
+                phaseReport.Equilibrium = equilibrium;
+                phaseReport.IncrementDisplacementTangent = incDispTangent;
+                phaseReport.IncrementDisplacementEquilibrium = incDispEquilibrium;
+                phaseReport.Lambda = input.Lambda;
+                phaseReport.Reaction = reaction;
+                phaseReport.Type = IterationPhaseType.Prediction;
+            }
+
+            return phaseReport;
         }
-        private double GetBergamParameter(double referenceStiffness, 
-                                          Vector<double> forceVector, 
+        private double GetBergamParameter(double referenceStiffness,
+                                          Vector<double> forceVector,
                                           Vector<double> displacement)
         {
             return Math.Abs(referenceStiffness / forceVector.DotProduct(displacement));
         }
-        public double GetLambdaIncrement(PredictorInput input, 
+        public double GetLambdaIncrement(PredictorInput input,
                                          Vector<double> incrementDisplacement)
         {
             double increment;

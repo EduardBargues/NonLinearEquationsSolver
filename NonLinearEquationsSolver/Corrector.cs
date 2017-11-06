@@ -3,67 +3,75 @@ using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using MoreLinq;
 
 namespace NonLinearEquationsSolver
 {
     public class Corrector
     {
-        public IterationReport Correct(CorrectorInput input, out IterationPhaseOutput result)
+        public IterationPhaseReport Correct(CorrectorInput input)
         {
-            IterationReport report = null;
-            result = null;
-
+            IterationPhaseReport report = new IterationPhaseReport();
             double firstLambda = input.PredictionPhaseLambda;
             Vector<double> firstDisplacement = input.PredictionPhaseDisplacement;
             double lambda = firstLambda;
             Vector<double> displacement = firstDisplacement;
-
             Vector<double> reaction = input.Function.GetImage(displacement);
             Vector<double> equilibrium = lambda * input.Force - reaction;
-            for (int iteration = 0; iteration < input.MaxIterations; iteration++)
+            bool convergence = false;
+            for (int iteration = 1; iteration <= input.MaxIterations; iteration++)
             {
                 Matrix<double> stiffnessMatrix = input.Function.GetTangentMatrix(displacement);
                 Vector<double> incTangentDisplacement = stiffnessMatrix.Solve(input.Force);
                 Vector<double> incEquilibriumDisplacement = stiffnessMatrix.Solve(equilibrium);
-                IterationPhaseOutput correction;
+                IncrementLoadDisplacement increment;
                 NonConvergenceReason reason = GetCorrection(input: input,
-                                                                displacement: displacement,
-                                                                lambda: lambda,
-                                                                dut: incTangentDisplacement,
-                                                                dur: incEquilibriumDisplacement,
-                                                                result: out correction);
-                bool correctionSucceeded = reason == NonConvergenceReason.None;
-                if (correctionSucceeded)
+                    displacement: displacement,
+                    lambda: lambda,
+                    dut: incTangentDisplacement,
+                    dur: incEquilibriumDisplacement,
+                    bestCandidate: out increment);
+                if (reason == NonConvergenceReason.None)
                 {
-                    displacement += correction.IncrementDisplacement;
-                    lambda += correction.IncrementLambda;
+                    displacement += increment.IncrementDisplacement;
+                    lambda += increment.IncrementLambda;
                     reaction = input.Function.GetImage(displacement);
                     equilibrium = lambda * input.Force - reaction;
                     Tolerances errors = GetErrors(force: input.Force,
                         reaction: reaction,
                         lambda: lambda,
                         displacement: displacement,
-                        incrementDisplacement: correction.IncrementDisplacement);
-                    bool convergence = CheckConvergence(errors, input.Tolerances);
-                    if (convergence)
-                    {
-                        report = new IterationReport(true, NonConvergenceReason.None);
-                        result = new IterationPhaseOutput(incrementLambda: lambda - firstLambda,
-                                                          incrementDisplacement: displacement - firstDisplacement);
-                        break;
-                    }
+                        incrementDisplacement: report.IncrementDisplacement);
+                    convergence = CheckConvergence(errors, input.Tolerances);
                 }
-                else
+                if (input.DoIterationReport)
                 {
-                    report = new IterationReport(false, reason);
-                    break;
+                    IterationReport iterationReport = new IterationReport
+                    {
+                        Lambda = lambda,
+                        BergamParameter = 0,
+                        Equilibrium = equilibrium,
+                        Reaction = reaction,
+                        Type = IterationPhaseType.Correction,
+                        TangentMatrix = stiffnessMatrix,
+                        IncrementDisplacementTangent = incTangentDisplacement,
+                        IncrementDisplacementEquilibrium = incEquilibriumDisplacement,
+                        IncrementLambda = increment.IncrementLambda,
+                        Convergence = convergence,
+                        Reason = reason
+                    };
+                    report.Iterations.Add(iterationReport);
                 }
+                if (!convergence &&
+                    iteration == input.MaxIterations)
+                    report.NonConvergenceReason = NonConvergenceReason.MaxIterationsReached;
+                if (convergence)
+                    break;
             }
 
-            if (report == null ||
-                report.Convergence == false)
-                report = new IterationReport(false, NonConvergenceReason.MaxIterationsReached);
-
+            report.Convergence = convergence;
+            report.IncrementDisplacement = displacement - firstDisplacement;
+            report.IncrementLambda = lambda - firstLambda;
             return report;
         }
 
@@ -72,23 +80,27 @@ namespace NonLinearEquationsSolver
                                                    double lambda,
                                                    Vector<double> dut,
                                                    Vector<double> dur,
-                                                   out IterationPhaseOutput result)
+                                                   out IncrementLoadDisplacement bestCandidate)
         {
             NonConvergenceReason reason = NonConvergenceReason.None;
-
             if (input.UseArcLength)
             {
-                List<IterationPhaseOutput> candidates = GetCandidates(input, dut, dur);
+                List<IncrementLoadDisplacement> candidates = GetCandidates(input: input,
+                                                                           dut: dut,
+                                                                           dur: dur);
                 IDisplacementChooser chooser = new RestoringMethod();
-                result = chooser.Choose(input.Function, input.Force, displacement, lambda, candidates);
+                bestCandidate = chooser.Choose(function: input.Function,
+                    fr: input.Force,
+                    displacementAfterPredictionPhase: displacement,
+                    lambda: lambda,
+                    candidates: candidates);
             }
             else
-                result = new IterationPhaseOutput(0, dur);
-
+                bestCandidate = new IncrementLoadDisplacement(0, dur);
             return reason;
         }
 
-        private List<IterationPhaseOutput> GetCandidates(CorrectorInput input,
+        private List<IncrementLoadDisplacement> GetCandidates(CorrectorInput input,
                                                          Vector<double> dut,
                                                          Vector<double> dur)
         {
@@ -118,10 +130,9 @@ namespace NonLinearEquationsSolver
                 (-b + Math.Sqrt(control))/(2*a),
                 (-b - Math.Sqrt(control))/(2*a)
             }
-            .Select(dlambda => new IterationPhaseOutput(dlambda, dur + dlambda * dut))
+            .Select(dlambda => new IncrementLoadDisplacement(dlambda, dur + dlambda * dut))
             .ToList();
         }
-
         // HELPER METHODS
         private bool CheckConvergence(Tolerances errors, Tolerances tolerances)
         {

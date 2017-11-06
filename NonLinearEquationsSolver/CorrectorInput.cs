@@ -21,5 +21,6 @@ namespace NonLinearEquationsSolver
         public int MaxArcLengthAdjustments { get; set; }
         public Tolerances Tolerances { get; set; }
         public int MaxIterations { get; set; }
+        public bool DoIterationReport { get; set; }
     }
 }

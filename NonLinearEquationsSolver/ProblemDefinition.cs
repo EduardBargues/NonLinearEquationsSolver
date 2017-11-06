@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra.Complex;
 
 namespace NonLinearEquationsSolver
 {
-    public class SolverInputs
+    public class ProblemDefinition
     {
         public IFunction Function { get; set; }
         public Vector<double> Force { get; set; }
@@ -23,5 +23,6 @@ namespace NonLinearEquationsSolver
         public double ArcLengthRadius { get; set; }
         public bool ChangeArcLengthRadius { get; set; }
         public int MaxArcLengthAdjustments { get; set; }
+        public bool DoIterationReport { get; set; }
     }
 }

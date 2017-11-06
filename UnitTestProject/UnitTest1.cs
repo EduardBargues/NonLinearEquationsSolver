@@ -16,7 +16,7 @@ namespace UnitTestProject
             IFunction function = new Function1();
             ISolver solver = new Solver();
             Vector<double> force = DenseVector.Create(2, 1);
-            SolverInputs input = new SolverInputs
+            ProblemDefinition input = new ProblemDefinition
             {
                 Force = force,
                 Function = function,
@@ -29,31 +29,102 @@ namespace UnitTestProject
                 InitialApproximation = DenseVector.Create(2, 0.1),
             };
             Vector<double> solution;
-            IterationReport report = solver.Solve(input, out solution);
+            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
 
             Vector<double> realSolution = DenseVector.Create(2, 1);
             Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
         }
-    }
-
-    public class Function1 : IFunction
-    {
-        public Matrix<double> GetTangentMatrix(Vector<double> u)
+        [TestMethod]
+        public void TestMethod2()
         {
-            return new DenseMatrix(2, 2)
+            IFunction function = new Function2();
+            ISolver solver = new Solver();
+            Vector<double> force = DenseVector.Create(2, 1);
+            ProblemDefinition input = new ProblemDefinition
             {
-                [0, 0] = 1,
-                [1, 1] = 1
+                Force = force,
+                Function = function,
+                FirstLambdaValue = 1,
+                LastLambdaValue = 1,
+                MaxIncrements = 10,
+                MaxIterations = 10,
+                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Beta = 1,
+                InitialApproximation = DenseVector.Create(2, 0.1)
             };
+            Vector<double> solution;
+            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            Vector<double> realSolution = DenseVector.Create(2, 1);
+            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
         }
-
-        public Vector<double> GetImage(Vector<double> u)
+        [TestMethod]
+        public void TestMethod3()
         {
-            return new DenseVector(2)
+            IFunction function = new Function3();
+            ISolver solver = new Solver();
+            Vector<double> force = DenseVector.Create(2, 2);
+            ProblemDefinition input = new ProblemDefinition
             {
-                [0] = u[0],
-                [1] = u[1]
+                Force = force,
+                Function = function,
+                FirstLambdaValue = 1,
+                LastLambdaValue = 1,
+                MaxIncrements = 10,
+                MaxIterations = 10,
+                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Beta = 1,
+                InitialApproximation = DenseVector.Create(2, 0.1)
             };
+            Vector<double> solution;
+            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            Vector<double> realSolution = DenseVector.Create(2, 1);
+            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+        }
+        [TestMethod]
+        public void TestMethod4()
+        {
+            IFunction function = new Function4();
+            ISolver solver = new Solver();
+            Vector<double> force = DenseVector.Create(2, 2);
+            ProblemDefinition input = new ProblemDefinition
+            {
+                Force = force,
+                Function = function,
+                FirstLambdaValue = 1,
+                LastLambdaValue = 1,
+                MaxIncrements = 10,
+                MaxIterations = 10,
+                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Beta = 1,
+                InitialApproximation = DenseVector.Create(2, 0.1)
+            };
+            Vector<double> solution;
+            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            Vector<double> realSolution = DenseVector.Create(2, 1);
+            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+        }
+        [TestMethod]
+        public void TestMethod5()
+        {
+            IFunction function = new Function4();
+            ISolver solver = new Solver();
+            Vector<double> force = DenseVector.Create(2, 2);
+            ProblemDefinition input = new ProblemDefinition
+            {
+                Force = force,
+                Function = function,
+                FirstLambdaValue = 0,
+                LastLambdaValue = 1,
+                MaxIncrements = 10,
+                MaxIterations = 10,
+                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Beta = 1,
+                InitialApproximation = DenseVector.Create(2, 0.1)
+            };
+            Vector<double> solution;
+            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            Vector<double> realSolution = DenseVector.Create(2, 1);
+            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
         }
     }
 }
