@@ -16,7 +16,7 @@ namespace NonLinearEquationsSolver
         public int MaxIterations { get; set; }
         public int MaxIncrements { get; set; }
 
-        public Tolerances Tolerances { get; set; }
+        public ErrorTolerancesInfo Tolerances { get; set; }
         public Vector<double> InitialApproximation { get; set; }
 
         public bool UseArcLength { get; set; }
@@ -24,5 +24,6 @@ namespace NonLinearEquationsSolver
         public bool ChangeArcLengthRadius { get; set; }
         public int MaxArcLengthAdjustments { get; set; }
         public bool DoIterationReport { get; set; }
+        public IterationScheme Scheme { get; set; }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace NonLinearEquationsSolver
 {
     public class Predictor
     {
-        public IterationPhaseReport Predict(PredictorInput input)
+        public IterationPhaseInfo Predict(PredictorInput input)
         {
             Vector<double> reaction = input.Function.GetImage(input.Displacement);
             Matrix<double> stiffnessMatrix = input.Function.GetTangentMatrix(input.Displacement);
@@ -18,17 +19,29 @@ namespace NonLinearEquationsSolver
             Vector<double> incDispEquilibrium = stiffnessMatrix.Solve(equilibrium);
             Vector<double> incDisplacement = incLambda * incDispTangent + incDispEquilibrium;
 
-            IterationPhaseReport phaseReport = new IterationPhaseReport(incLambda, incDisplacement);
+            IterationPhaseInfo phaseReport = new IterationPhaseInfo(
+                incrementLambda: incLambda,
+                incrementDisplacement: incDisplacement,
+                type: IterationPhaseType.Prediction,
+                convergence: true)
+            { BergamParameter = bergam };
             if (input.DoIterationReport)
-            {
-                phaseReport.BergamParameter = bergam;
-                phaseReport.Equilibrium = equilibrium;
-                phaseReport.IncrementDisplacementTangent = incDispTangent;
-                phaseReport.IncrementDisplacementEquilibrium = incDispEquilibrium;
-                phaseReport.Lambda = input.Lambda;
-                phaseReport.Reaction = reaction;
-                phaseReport.Type = IterationPhaseType.Prediction;
-            }
+                phaseReport.Iterations = new List<IterationInfo>
+                {
+                    new IterationInfo
+                    {
+                        Equilibrium = equilibrium,
+                        IncrementDisplacementTangent = incDispTangent,
+                        IncrementDisplacementEquilibrium = incDispEquilibrium,
+                        IncrementDisplacement = incDisplacement,
+                        Lambda = input.Lambda,
+                        Reaction = reaction,
+                        Success = true,
+                        FailReason = FailReason.None,
+                        IncrementLambda = incLambda,
+                        TangentMatrix = stiffnessMatrix,
+                    }
+                };
 
             return phaseReport;
         }

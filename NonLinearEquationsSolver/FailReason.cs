@@ -1,11 +1,12 @@
 ﻿namespace NonLinearEquationsSolver
 {
-    public enum NonConvergenceReason
+    public enum FailReason
     {
         None,
-        Unknown,
-        ArcLengthTooBig,
         MaxIncrementsReached,
+        IncrementLoadFailed,
         MaxIterationsReached,
+        CorrectionPhaseFailed,
+        ArcLengthTooLarge,
     }
 }

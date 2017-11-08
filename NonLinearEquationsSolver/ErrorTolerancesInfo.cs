@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace NonLinearEquationsSolver
 {
-    public class Tolerances
+    public class ErrorTolerancesInfo
     {
         public double Displacement { get; set; }
         public double Equilibrium { get; set; }
         public double Work { get; set; }
         public double IncrementalForce { get; set; }
 
-        public Tolerances(double displacement, double equilibrium, double work, double incrementalForce)
+        public ErrorTolerancesInfo(double displacement, 
+            double equilibrium, 
+            double work, 
+            double incrementalForce)
         {
             Displacement = displacement;
             Equilibrium = equilibrium;

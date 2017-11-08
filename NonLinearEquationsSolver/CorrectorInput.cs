@@ -16,11 +16,11 @@ namespace NonLinearEquationsSolver
         public double PredictionPhaseIncrementLambda { get; set; }
         public Vector<double> PredictionPhaseIncrementDisplacement { get; set; }
         public double Beta { get; set; }
-        public bool UseArcLength { get; set; }
         public double ArcLengthRadius { get; set; }
         public int MaxArcLengthAdjustments { get; set; }
-        public Tolerances Tolerances { get; set; }
+        public ErrorTolerancesInfo Tolerances { get; set; }
         public int MaxIterations { get; set; }
         public bool DoIterationReport { get; set; }
+        public IterationScheme Scheme { get; set; }
     }
 }

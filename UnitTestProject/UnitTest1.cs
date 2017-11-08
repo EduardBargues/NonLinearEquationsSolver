@@ -24,15 +24,14 @@ namespace UnitTestProject
                 LastLambdaValue = 1,
                 MaxIncrements = 10,
                 MaxIterations = 10,
-                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
                 Beta = 1,
                 InitialApproximation = DenseVector.Create(2, 0.1),
             };
-            Vector<double> solution;
-            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            SolverReport report = solver.Solve(input);
 
             Vector<double> realSolution = DenseVector.Create(2, 1);
-            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+            Assert.IsTrue((report.Solution - realSolution).Norm(2) <= 1e-3);
         }
         [TestMethod]
         public void TestMethod2()
@@ -48,14 +47,13 @@ namespace UnitTestProject
                 LastLambdaValue = 1,
                 MaxIncrements = 10,
                 MaxIterations = 10,
-                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
                 Beta = 1,
                 InitialApproximation = DenseVector.Create(2, 0.1)
             };
-            Vector<double> solution;
-            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            var report = solver.Solve(input);
             Vector<double> realSolution = DenseVector.Create(2, 1);
-            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+            Assert.IsTrue((report.Solution - realSolution).Norm(2) <= 1e-3);
         }
         [TestMethod]
         public void TestMethod3()
@@ -71,14 +69,13 @@ namespace UnitTestProject
                 LastLambdaValue = 1,
                 MaxIncrements = 10,
                 MaxIterations = 10,
-                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
                 Beta = 1,
                 InitialApproximation = DenseVector.Create(2, 0.1)
             };
-            Vector<double> solution;
-            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            var report = solver.Solve(input);
             Vector<double> realSolution = DenseVector.Create(2, 1);
-            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+            Assert.IsTrue((report.Solution - realSolution).Norm(2) <= 1e-3);
         }
         [TestMethod]
         public void TestMethod4()
@@ -94,14 +91,13 @@ namespace UnitTestProject
                 LastLambdaValue = 1,
                 MaxIncrements = 10,
                 MaxIterations = 10,
-                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
                 Beta = 1,
                 InitialApproximation = DenseVector.Create(2, 0.1)
             };
-            Vector<double> solution;
-            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            SolverReport report = solver.Solve(input);
             Vector<double> realSolution = DenseVector.Create(2, 1);
-            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+            Assert.IsTrue((report.Solution - realSolution).Norm(2) <= 1e-3);
         }
         [TestMethod]
         public void TestMethod5()
@@ -117,14 +113,13 @@ namespace UnitTestProject
                 LastLambdaValue = 1,
                 MaxIncrements = 10,
                 MaxIterations = 10,
-                Tolerances = new Tolerances(1e-3, 1e-3, 1e-3, 1e-3),
+                Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
                 Beta = 1,
                 InitialApproximation = DenseVector.Create(2, 0.1)
             };
-            Vector<double> solution;
-            IterationPhaseReport phaseReport = solver.Solve(input, out solution);
+            var report= solver.Solve(input);
             Vector<double> realSolution = DenseVector.Create(2, 1);
-            Assert.IsTrue((solution - realSolution).Norm(2) <= 1e-3);
+            Assert.IsTrue((report.Solution - realSolution).Norm(2) <= 1e-3);
         }
     }
 }

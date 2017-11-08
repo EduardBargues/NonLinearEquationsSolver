@@ -10,6 +10,6 @@ namespace NonLinearEquationsSolver
                                              Vector<double> fr,
                                              Vector<double> displacementAfterPredictionPhase,
                                              double lambda,
-                                             List<IncrementLoadDisplacement> candidates);
+                                             IEnumerable<IncrementLoadDisplacement> candidates);
     }
 }

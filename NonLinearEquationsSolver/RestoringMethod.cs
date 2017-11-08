@@ -8,14 +8,15 @@ namespace NonLinearEquationsSolver
 {
     public class RestoringMethod : IDisplacementChooser
     {
-        public IterationPhaseReport Choose(IFunction function,
+        public IncrementLoadDisplacement Choose(IFunction function,
             Vector<double> fr,
             Vector<double> displacementAfterPredictionPhase,
             double lambda,
-            List<IterationPhaseReport> candidates)
+            IEnumerable<IncrementLoadDisplacement> candidates)
         {
-            return candidates.Any()
-                ? candidates.MinBy(candidate =>
+            List<IncrementLoadDisplacement> listCandidates = candidates.ToList();
+            return listCandidates.Any()
+                ? listCandidates.MinBy(candidate =>
                     {
                         Vector<double> image =
                             function.GetImage(displacementAfterPredictionPhase + candidate.IncrementDisplacement);
