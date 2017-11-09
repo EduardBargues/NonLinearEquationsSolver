@@ -5,7 +5,7 @@ Library to provide and easy-to-use interface to solve non-linear systems of equa
 
 ### Example 1
 
-The library can solve any thing that inherits from the interface ```c# IFunction```
+The library can solve any thing that inherits from the interface IFunction. This interface forces you to implement two methods: GetTangentMatrix() and GetImage(). You can see them in the following brief example:
 ```c#
 public class Function1 : IFunction
 {
