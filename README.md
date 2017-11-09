@@ -2,9 +2,20 @@
 
 Library to provide and easy-to-use interface to solve non-linear systems of equations using variants of the Newton-Raphson method.
 
-## Examples
+# Table of contents
+- [Examples](#examples)
+    - [Example 1](#example1)
+    - [Example 2](#example2)
+    - [Example 3](#example3)
+    - [Example 4](#example4)
+    - [Example 5](#example5)
 
-### Example 1
+## This is the introduction <a name="introduction"></a>
+Some introduction text, formatted in heading 2 style
+
+## Examples <a name="examples"></a>
+
+### Example 1 <a name="example1"></a>
 
 The library can solve any thing that inherits from the interface IFunction. This interface forces you to implement two methods: GetTangentMatrix() and GetImage(). You can see them in the following brief example:
 ```c#
@@ -61,7 +72,7 @@ As you can see, the TestMethod1() does the following:
 - Defines the ProblemDefinition class, where we define the problem and the parameters for our solver.
 - Finally the solver uses the method .Solve() to provide with a SolverReport class where inside there is the solution in case of convergence together with some extra information about the iterations performed.
 
-### Example 2
+### Example 2 <a name="example2"></a>
 
 ```c#
 public class Function2 : IFunction
@@ -107,7 +118,7 @@ public void TestMethod2()
 }
 ```
 
-### Example 3
+### Example 3 <a name="example3"></a>
 
 ```c#
 public class Function3 : IFunction
@@ -160,7 +171,7 @@ public void TestMethod3()
 ```
         
 
-### Example 4
+### Example 4 <a name="example4"></a>
 
 ```c#
 public class Function4 : IFunction
@@ -211,7 +222,7 @@ public void TestMethod4()
     Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
 }
 ```
-### Example 5
+### Example 5 <a name="example5"></a>
 
 ```c#
 public class Function4 : IFunction
