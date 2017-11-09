@@ -56,3 +56,48 @@ As you can see, the TestMethod1() does the following:
 - Initialize a solver class.
 - Defines the ProblemDefinition class, where we define the problem and the parameters for our solver.
 - Finally the solver uses the method .Solve() to provide with a SolverReport class where inside there is the solution in case of convergence together with some extra information about the iterations performed.
+###Example 2
+```c#
+public class Function2 : IFunction
+{
+    public Matrix<double> GetTangentMatrix(Vector<double> u)
+    {
+        return new DenseMatrix(2, 2)
+        {
+            [0, 0] = 2 * u[0],
+            [1, 1] = 2 * u[1]
+        };
+    }
+
+    public Vector<double> GetImage(Vector<double> u)
+    {
+        return new DenseVector(2)
+        {
+            [0] = Math.Pow(u[0], 2),
+            [1] = Math.Pow(u[1], 2)
+        };
+    }
+}
+public void TestMethod2()
+{
+    IFunction function = new Function2();
+    ISolver solver = new Solver();
+    Vector<double> force = DenseVector.Create(2, 1);
+    ProblemDefinition input = new ProblemDefinition
+    {
+        Force = force,
+        Function = function,
+        FirstLambdaValue = 1,
+        LastLambdaValue = 1,
+        MaxIncrements = 10,
+        MaxIterations = 10,
+        Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
+        Beta = 1,
+        InitialApproximation = DenseVector.Create(2, 0.1)
+    };
+    SolverReport report = solver.Solve(input);
+    Vector<double> realSolution = DenseVector.Create(2, 1);
+    Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
+}
+
+```
