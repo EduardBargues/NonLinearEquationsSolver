@@ -1,7 +1,11 @@
 # NonLinearEquationsSolver
+
 Library to provide and easy-to-use interface to solve non-linear systems of equations using variants of the Newton-Raphson method.
+
 ## Examples
+
 ### Example 1
+
 The library can solve any thing that inherits from the interface IFunction. This interface forces you to implement two methods: GetTangentMatrix() and GetImage(). You can see them in the following brief example:
 ```c#
 public class Function1 : IFunction
@@ -56,7 +60,9 @@ As you can see, the TestMethod1() does the following:
 - Initialize a solver class.
 - Defines the ProblemDefinition class, where we define the problem and the parameters for our solver.
 - Finally the solver uses the method .Solve() to provide with a SolverReport class where inside there is the solution in case of convergence together with some extra information about the iterations performed.
+
 ###Example 2
+
 ```c#
 public class Function2 : IFunction
 {
