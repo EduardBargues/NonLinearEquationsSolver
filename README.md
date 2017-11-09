@@ -10,9 +10,6 @@ Library to provide and easy-to-use interface to solve non-linear systems of equa
     - [Example 4](#example4)
     - [Example 5](#example5)
 
-## This is the introduction <a name="introduction"></a>
-Some introduction text, formatted in heading 2 style
-
 ## Examples <a name="examples"></a>
 
 ### Example 1 <a name="example1"></a>
