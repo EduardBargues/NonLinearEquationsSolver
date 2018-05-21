@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NonLinearEquationsSolver", "NonLinearEquationsSolver.csproj", "{58361A90-B29B-4011-AE53-46FC5B18F996}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "..\UnitTestProject\UnitTestProject.csproj", "{972BA138-F93D-467A-B84C-FCB247E8CAF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +15,11 @@ Global
 		{58361A90-B29B-4011-AE53-46FC5B18F996}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58361A90-B29B-4011-AE53-46FC5B18F996}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58361A90-B29B-4011-AE53-46FC5B18F996}.Release|Any CPU.Build.0 = Release|Any CPU
-		{972BA138-F93D-467A-B84C-FCB247E8CAF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{972BA138-F93D-467A-B84C-FCB247E8CAF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{972BA138-F93D-467A-B84C-FCB247E8CAF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{972BA138-F93D-467A-B84C-FCB247E8CAF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D6E25FE-2311-4E1A-ACDA-137B67DC5AD2}
 	EndGlobalSection
 EndGlobal
