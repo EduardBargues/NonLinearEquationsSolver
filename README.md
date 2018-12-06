@@ -168,8 +168,8 @@ void AssertSolutionIsCorrect( Vector<double> solution ) {
 	foreach (double d in solution) {
 	    Assert.AreEqual ( first, d, numberTolerance );
 	}
-	}
-	void AssertSolutionsAreCorrect( Func<Vector<double>, Vector<double>> reaction, Vector<double> force, List<LoadState> states ) {
+}
+void AssertSolutionsAreCorrect( Func<Vector<double>, Vector<double>> reaction, Vector<double> force, List<LoadState> states ) {
 	foreach (LoadState state in states) {
 	    AssertSolutionIsCorrect ( state.Displacement );
 	    TestUtils.AssertAreCloseEnough ( reaction ( state.Displacement ), state.Lambda * force, tolerance );
