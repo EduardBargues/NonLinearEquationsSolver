@@ -1,14 +1,13 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using NonLinearEquationsSolver.Common;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NonLinearEquationsSolver.Tests {
+namespace NonLinearEquationsSolver {
     [TestFixture]
-    public class SolverResults {
+    internal class TestSolverResults {
         readonly double tolerance = 1e-3;
         readonly double numberTolerance = 1e-10;
 
@@ -21,9 +20,8 @@ namespace NonLinearEquationsSolver.Tests {
                 return new DenseMatrix ( 2, 2 ) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
             }
             DenseVector force = new DenseVector ( 2 ) { [0] = 1, [1] = 3 };
-            Solver.Solver solver = Solver.Builder
-                .Solve ( 2, Function )
-                .WithStiffnessMatrix ( Stiffness )
+            Solver solver = Solver.Builder
+                .Solve ( 2, Function, Stiffness )
                 .Under ( force )
                 .Build ( );
             List<LoadState> states = solver.Broadcast ( ).Take ( 2 ).ToList ( );
@@ -41,8 +39,7 @@ namespace NonLinearEquationsSolver.Tests {
             DenseVector force = new DenseVector ( 2 ) { [0] = 1, [1] = 3 };
             double inc = 1e-2;
             Solver solver = Solver.Builder
-                .Solve ( 2, Function )
-                .WithStiffnessMatrix ( Stiffness )
+                .Solve ( 2, Function, Stiffness )
                 .Under ( force )
                 .UsingStandardNewtonRaphsonScheme ( inc )
                 .Build ( );
@@ -62,8 +59,7 @@ namespace NonLinearEquationsSolver.Tests {
             DenseVector force = new DenseVector ( 2 ) { [0] = 1, [1] = 3 };
             double radius = 1e-2;
             Solver solver = Solver.Builder
-                .Solve ( 2, Function )
-                .WithStiffnessMatrix ( Stiffness )
+                .Solve ( 2, Function, Stiffness )
                 .Under ( force )
                 .UsingArcLengthScheme ( radius )
                 .Build ( );
@@ -89,11 +85,9 @@ namespace NonLinearEquationsSolver.Tests {
             }
             DenseVector force = new DenseVector ( 2 ) { [0] = 3, [1] = 3 };
             Solver solver = Solver.Builder
-                .Solve ( 2, Function )
-                .WithStiffnessMatrix ( Stiffness )
+                .Solve ( 2, Function, Stiffness )
                 .Under ( force )
-                .WithInitialLoadFactor ( 0.1 )
-                .WithInitialDisplacement ( new DenseVector ( 2 ) { [0] = 1, [1] = 1 } )
+                .WithInitialConditions ( 0.1, DenseVector.Create ( 2, 0 ), DenseVector.Create ( 2, 1 ) )
                 .Build ( );
             List<LoadState> states = solver.Broadcast ( ).TakeWhile ( x => x.Lambda <= 1 ).ToList ( );
             AssertSolutionsAreCorrect ( Function, force, states );
@@ -117,11 +111,9 @@ namespace NonLinearEquationsSolver.Tests {
             }
             DenseVector force = new DenseVector ( 2 ) { [0] = 3, [1] = 3 };
             Solver solver = Solver.Builder
-                .Solve ( 2, Function )
-                .WithStiffnessMatrix ( Stiffness )
+                .Solve ( 2, Function, Stiffness )
                 .Under ( force )
-                .WithInitialLoadFactor ( 0.1 )
-                .WithInitialDisplacement ( new DenseVector ( 2 ) { [0] = 1, [1] = 1 } )
+                .WithInitialConditions ( 0.1, DenseVector.Create ( 2, 0 ), DenseVector.Create ( 2, 1 ) )
                 .UsingStandardNewtonRaphsonScheme ( 0.01 )
                 .Build ( );
             List<LoadState> states = solver.Broadcast ( ).TakeWhile ( x => x.Lambda <= 1 ).ToList ( );
@@ -145,12 +137,10 @@ namespace NonLinearEquationsSolver.Tests {
                 };
             }
             DenseVector force = new DenseVector ( 2 ) { [0] = 3, [1] = 3 };
-            Solver.Solver solver = Solver.Builder
-                .Solve ( 2, Function )
-                .WithStiffnessMatrix ( Stiffness )
+            Solver solver = Solver.Builder
+                .Solve ( 2, Function, Stiffness )
                 .Under ( force )
-                .WithInitialLoadFactor ( 0.1 )
-                .WithInitialDisplacement ( new DenseVector ( 2 ) { [0] = 1, [1] = 1 } )
+                .WithInitialConditions ( 0.1, DenseVector.Create ( 2, 0 ), DenseVector.Create ( 2, 1 ) )
                 .UsingArcLengthScheme ( 0.05 )
                 .NormalizeLoadWith ( 0.01 )
                 .Build ( );
@@ -161,7 +151,7 @@ namespace NonLinearEquationsSolver.Tests {
         void AssertSolutionIsCorrect( Vector<double> solution ) {
             double first = solution.First ( );
             foreach (double d in solution) {
-                TestUtils.AssertAreCloseEnough ( first, d, numberTolerance );
+                Assert.AreEqual ( first, d, numberTolerance );
             }
         }
         void AssertSolutionsAreCorrect( Func<Vector<double>, Vector<double>> reaction, Vector<double> force, List<LoadState> states ) {

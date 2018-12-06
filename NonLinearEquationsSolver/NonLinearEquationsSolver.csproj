@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\NUnit.3.10.1\build\NUnit.props" Condition="Exists('packages\NUnit.3.10.1\build\NUnit.props')" />
+  <Import Project="packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('packages\NUnit.3.11.0\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,19 +39,22 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\MathNet.Numerics.4.5.1\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Numerics.4.7.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="MoreLinq, Version=2.10.21623.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>packages\morelinq.2.10.0\lib\net40\MoreLinq.dll</HintPath>
+    <Reference Include="MoreLinq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>packages\morelinq.3.0.0\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,34 +63,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Strings.cs" />
-    <Compile Include="Correction\AngleMethod.cs" />
-    <Compile Include="Correction\CorrectionSchemeArcLength.cs" />
-    <Compile Include="Correction\CorrectionSchemeStandard.cs" />
-    <Compile Include="Correction\CorrectionSchemeWorkControl.cs" />
-    <Compile Include="Correction\Corrector.cs" />
-    <Compile Include="Correction\ICorrectionScheme.cs" />
-    <Compile Include="Prediction\IPredictionScheme.cs" />
-    <Compile Include="Common\LoadIncrementalState.cs" />
-    <Compile Include="Common\LoadState.cs" />
-    <Compile Include="Prediction\PredictionSchemeArcLength.cs" />
-    <Compile Include="Correction\IDisplacementChooser.cs" />
-    <Compile Include="Prediction\PredictionSchemeStandard.cs" />
-    <Compile Include="Prediction\PredictionSchemeWorkControl.cs" />
-    <Compile Include="Prediction\Predictor.cs" />
+    <Compile Include="AngleMethod.cs" />
+    <Compile Include="CorrectionSchemeArcLength.cs" />
+    <Compile Include="CorrectionSchemeStandard.cs" />
+    <Compile Include="CorrectionSchemeWorkControl.cs" />
+    <Compile Include="Corrector.cs" />
+    <Compile Include="ICorrectionScheme.cs" />
+    <Compile Include="IDisplacementChooser.cs" />
+    <Compile Include="IPredictionScheme.cs" />
+    <Compile Include="LoadIncrementalState.cs" />
+    <Compile Include="LoadIncrementalStateResult.cs" />
+    <Compile Include="LoadState.cs" />
+    <Compile Include="PredictionSchemeArcLength.cs" />
+    <Compile Include="PredictionSchemeStandard.cs" />
+    <Compile Include="PredictionSchemeWorkControl.cs" />
+    <Compile Include="Predictor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Correction\RestoringMethod.cs" />
-    <Compile Include="Solver\Solver.cs" />
-    <Compile Include="Solver\SolverBuilder.cs" />
-    <Compile Include="Solver\SolverBuilderSchemeArcLength.cs" />
-    <Compile Include="Solver\SolverBuilderIncrementalLoad.cs" />
-    <Compile Include="Solver\SolverBuilderSchemeStandardNewtonRaphson.cs" />
-    <Compile Include="Solver\SolverBuilderStopCondition.cs" />
-    <Compile Include="Solver\SolverBuilderStructure.cs" />
-    <Compile Include="Solver\SolverBuilderSchemeWorkControl.cs" />
-    <Compile Include="Common\StructureInfo.cs" />
-    <Compile Include="Tests\BuildSolver.cs" />
-    <Compile Include="Tests\SolverResults.cs" />
+    <Compile Include="RestoringMethod.cs" />
+    <Compile Include="Solver.cs" />
+    <Compile Include="SolverBuilder.cs" />
+    <Compile Include="SolverBuilderIncrementalLoad.cs" />
+    <Compile Include="SolverBuilderSchemeArcLength.cs" />
+    <Compile Include="SolverBuilderSchemeStandardNewtonRaphson.cs" />
+    <Compile Include="SolverBuilderSchemeWorkControl.cs" />
+    <Compile Include="SolverBuilderStopCondition.cs" />
+    <Compile Include="SolverBuilderStructure.cs" />
+    <Compile Include="Strings.cs" />
+    <Compile Include="StructureInfo.cs" />
+    <Compile Include="TestSolverBuilder.cs" />
+    <Compile Include="TestSolverResult.cs" />
+    <Compile Include="TestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -99,7 +104,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\NUnit.3.10.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NUnit.3.10.1\build\NUnit.props'))" />
+    <Error Condition="!Exists('packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NUnit.3.11.0\build\NUnit.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
