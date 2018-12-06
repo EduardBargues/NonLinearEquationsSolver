@@ -3,270 +3,176 @@
 Library to provide and easy-to-use interface to solve non-linear systems of equations using variants of the Newton-Raphson method.
 
 # Table of contents
-- [Examples](#examples)
-    - [Example 1](#example1)
-    - [Example 2](#example2)
-    - [Example 3](#example3)
-    - [Example 4](#example4)
-    - [Example 5](#example5)
+- [Description](#description)
+- [Tests](#tests)
 
-## Examples <a name="examples"></a>
+## Description <a name="description"></a>
 
-### Example 1 <a name="example1"></a>
+To use this library you esentially need 2 things: 
+* Function to be solved (defined by a ``` Func<Vector<double>, Vector<double>> ```).
+* Stiffness, also called derivative (defined by ``` Func<Vector<double>, Matrix<double>> ```).
+Once you have both, you need to create a solver using the builder I provide (check the tests to see how it works). Basically, the builder allows you to define all the aspects of your solver. The aspects are:
+* ``` Solver.Builder.Solve( int degreesOfFreedom, Func<Vector<double>, Vector<double>> structure, Func<Vector<double>, Matrix<double>> stiffness ) ``` : Allows the definition of the problem to solve.
+* ``` Solver.Builder.Under( Func<Vector<double>, Vector<double>> referenceLoad) ``` : Defines the external load to equilibrate.
+* ``` Solver.Builder.UntilTolerancesReached( double displacement, double equilibrium, double energy ) ``` : Define tolerances to satisfy.
+* ``` Solver.Builder.WithMaximumCorrectionIterations( int maximumCorrectionIterations ) ``` : Limits the number of corrections on each iteration.
+* ``` Solver.Builder.UsingStandardNewtonRaphsonScheme( double loadFactorIncrement ) ``` : Defines the iteration scheme as standard Newton-Raphson.
+* ``` Solver.Builder.UsingWorkControlScheme( double work ) ``` : Defines the iteration scheme as a variation of the Newton-Raphson called work-control scheme.
+* ``` Solver.Builder.UsingArcLengthScheme( double radius ) ``` : Defines the iteration scheme as a variation of the Newton-Raphson called Arc-Length scheme.
+    * ``` .NormalizeLoadWith( double beta ) ``` : Normalize external load with a factor in case you are working with different units.
+    * ``` .WithRestoringMethodInCorrectionPhase() ``` : Defines the correction scheme as Restoring method.
+    * ``` .WithAngleMethodInCorrectionPhase() ``` : Defines the correction scheme as Angle method.
 
-The library can solve any thing that inherits from the interface IFunction. This interface forces you to implement two methods: GetTangentMatrix() and GetImage(). You can see them in the following brief example:
-```c#
-public class Function1 : IFunction
-{
-    public Matrix<double> GetTangentMatrix(Vector<double> u)
-    {
-        return new DenseMatrix(2, 2)
-        {
-            [0, 0] = 1,
-            [1, 1] = 1
-        };
-    }
-
-    public Vector<double> GetImage(Vector<double> u)
-    {
-        return new DenseVector(2)
-        {
-            [0] = u[0],
-            [1] = u[1]
-        };
-    }
-}
-```
-As you can see, the GetTangentMatrix() method provides the Jacobian o tangent matrix of your system that the Solver class will use to iterate with the Newton-Raphson method.
-Now, you need to define the problem to be solve as in the next part of code:
-```c#
-public void TestMethod1()
-{
-    IFunction function = new Function1();
-    ISolver solver = new Solver();
-    Vector<double> force = DenseVector.Create(2, 1);
-    ProblemDefinition input = new ProblemDefinition
-    {
-        Force = force,
-        Function = function,
-        FirstLambdaValue = 1,
-        LastLambdaValue = 1,
-        MaxIncrements = 10,
-        MaxIterations = 10,
-        Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
-        Beta = 1,
-        InitialApproximation = DenseVector.Create(2, 0.1),
-    };
-    SolverReport report = solver.Solve(input);
-
-    Vector<double> realSolution = DenseVector.Create(2, 1);
-    Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
-}
-```
-As you can see, the TestMethod1() does the following:
-- Initialize the function to be solved as an IFunction interface (here you can use where system you are willing to study, a finite element model for example).
-- Initialize a solver class.
-- Defines the ProblemDefinition class, where we define the problem and the parameters for our solver.
-- Finally the solver uses the method .Solve() to provide with a SolverReport class where inside there is the solution in case of convergence together with some extra information about the iterations performed.
-
-### Example 2 <a name="example2"></a>
+## Tests <a name="tests"></a>
 
 ```c#
-public class Function2 : IFunction
-{
-    public Matrix<double> GetTangentMatrix(Vector<double> u)
-    {
-        return new DenseMatrix(2, 2)
-        {
-            [0, 0] = 2 * u[0],
-            [1, 1] = 2 * u[1]
-        };
-    }
-
-    public Vector<double> GetImage(Vector<double> u)
-    {
-        return new DenseVector(2)
-        {
-            [0] = Math.Pow(u[0], 2),
-            [1] = Math.Pow(u[1], 2)
-        };
-    }
+[Test]
+public void SolveLinearFunction() {
+	Vector<double> Function( Vector<double> u ) {
+	    return new DenseVector ( 2 ) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+	}
+	Matrix<double> Stiffness( Vector<double> u ) {
+	    return new DenseMatrix ( 2, 2 ) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
+	}
+	DenseVector force = new DenseVector ( 2 ) { [0] = 1, [1] = 3 };
+	Solver solver = Solver.Builder
+	    .Solve ( 2, Function, Stiffness )
+	    .Under ( force )
+	    .Build ( );
+	List<LoadState> states = solver.Broadcast ( ).Take ( 2 ).ToList ( );
+	AssertSolutionsAreCorrect ( Function, force, states );
 }
-public void TestMethod2()
-{
-    IFunction function = new Function2();
-    ISolver solver = new Solver();
-    Vector<double> force = DenseVector.Create(2, 1);
-    ProblemDefinition input = new ProblemDefinition
-    {
-        Force = force,
-        Function = function,
-        FirstLambdaValue = 1,
-        LastLambdaValue = 1,
-        MaxIncrements = 10,
-        MaxIterations = 10,
-        Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
-        Beta = 1,
-        InitialApproximation = DenseVector.Create(2, 0.1)
-    };
-    SolverReport report = solver.Solve(input);
-    Vector<double> realSolution = DenseVector.Create(2, 1);
-    Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
+
+[Test]
+public void SolveLinearFunctionSmallIncrements() {
+	Vector<double> Function( Vector<double> u ) {
+	    return new DenseVector ( 2 ) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+	}
+	Matrix<double> Stiffness( Vector<double> u ) {
+	    return new DenseMatrix ( 2, 2 ) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
+	}
+	DenseVector force = new DenseVector ( 2 ) { [0] = 1, [1] = 3 };
+	double inc = 1e-2;
+	Solver solver = Solver.Builder
+	    .Solve ( 2, Function, Stiffness )
+	    .Under ( force )
+	    .UsingStandardNewtonRaphsonScheme ( inc )
+	    .Build ( );
+	List<LoadState> states = solver.Broadcast ( ).TakeWhile ( s => s.Lambda <= 1 ).ToList ( );
+	Assert.AreEqual ( (int)(1 / inc) - 1, states.Count );
+	AssertSolutionsAreCorrect ( Function, force, states );
 }
-```
 
-### Example 3 <a name="example3"></a>
-
-```c#
-public class Function3 : IFunction
-{
-    public Matrix<double> GetTangentMatrix(Vector<double> u)
-    {
-        double x = u[0];
-        double y = u[1];
-        return new DenseMatrix(2, 2)
-        {
-            [0, 0] = 2 * x,
-            [0, 1] = 1,
-            [1, 0] = 1,
-            [1, 1] = 2 * y,
-        };
-    }
-
-    public Vector<double> GetImage(Vector<double> u)
-    {
-        double x = u[0];
-        double y = u[1];
-        return new DenseVector(2)
-        {
-            [0] = Math.Pow(x, 2) + y,
-            [1] = Math.Pow(y, 2) + y
-        };
-    }
+[Test]
+public void SolveLinearFunctionArcLength() {
+	Vector<double> Function( Vector<double> u ) {
+	    return new DenseVector ( 2 ) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+	}
+	Matrix<double> Stiffness( Vector<double> u ) {
+	    return new DenseMatrix ( 2, 2 ) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
+	}
+	DenseVector force = new DenseVector ( 2 ) { [0] = 1, [1] = 3 };
+	double radius = 1e-2;
+	Solver solver = Solver.Builder
+	    .Solve ( 2, Function, Stiffness )
+	    .Under ( force )
+	    .UsingArcLengthScheme ( radius )
+	    .Build ( );
+	List<LoadState> states = solver.Broadcast ( ).TakeWhile ( s => s.Lambda <= 1 ).ToList ( );
+	AssertSolutionsAreCorrect ( Function, force, states );
 }
-public void TestMethod3()
-{
-    IFunction function = new Function3();
-    ISolver solver = new Solver();
-    Vector<double> force = DenseVector.Create(2, 2);
-    ProblemDefinition input = new ProblemDefinition
-    {
-        Force = force,
-        Function = function,
-        FirstLambdaValue = 1,
-        LastLambdaValue = 1,
-        MaxIncrements = 10,
-        MaxIterations = 10,
-        Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
-        Beta = 1,
-        InitialApproximation = DenseVector.Create(2, 0.1)
-    };
-    SolverReport report = solver.Solve(input);
-    Vector<double> realSolution = DenseVector.Create(2, 1);
-    Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
+
+[Test]
+public void SolveQuadraticFunction() {
+	Vector<double> Function( Vector<double> u ) {
+	    return new DenseVector ( 2 ) {
+	        [0] = u[0] * u[0] + 2 * u[1] * u[1],
+	        [1] = 2 * u[0] * u[0] + u[1] * u[1]
+	    };
+	}
+	Matrix<double> Stiffness( Vector<double> u ) {
+	    return new DenseMatrix ( 2, 2 ) {
+	        [0, 0] = 2 * u[0],
+	        [0, 1] = 4 * u[1],
+	        [1, 0] = 4 * u[0],
+	        [1, 1] = 2 * u[1]
+	    };
+	}
+	DenseVector force = new DenseVector ( 2 ) { [0] = 3, [1] = 3 };
+	Solver solver = Solver.Builder
+	    .Solve ( 2, Function, Stiffness )
+	    .Under ( force )
+	    .WithInitialConditions ( 0.1, DenseVector.Create ( 2, 0 ), DenseVector.Create ( 2, 1 ) )
+	    .Build ( );
+	List<LoadState> states = solver.Broadcast ( ).TakeWhile ( x => x.Lambda <= 1 ).ToList ( );
+	AssertSolutionsAreCorrect ( Function, force, states );
 }
-```
-        
 
-### Example 4 <a name="example4"></a>
-
-```c#
-public class Function4 : IFunction
-{
-    public Matrix<double> GetTangentMatrix(Vector<double> u)
-    {
-        double x = u[0];
-        double y = u[1];
-        return new DenseMatrix(2, 2)
-        {
-            [0, 0] = 2 * x + y,
-            [0, 1] = x,
-            [1, 0] = 1,
-            [1, 1] = 1,
-        };
-    }
-
-    public Vector<double> GetImage(Vector<double> u)
-    {
-        double x = u[0];
-        double y = u[1];
-        return new DenseVector(2)
-        {
-            [0] = Math.Pow(x, 2) + y * x,
-            [1] = x + y
-        };
-    }
+[Test]
+public void SolveQuadraticFunctionSmallIncrements() {
+	Vector<double> Function( Vector<double> u ) {
+	    return new DenseVector ( 2 ) {
+	        [0] = u[0] * u[0] + 2 * u[1] * u[1],
+	        [1] = 2 * u[0] * u[0] + u[1] * u[1]
+	    };
+	}
+	Matrix<double> Stiffness( Vector<double> u ) {
+	    return new DenseMatrix ( 2, 2 ) {
+	        [0, 0] = 2 * u[0],
+	        [0, 1] = 4 * u[1],
+	        [1, 0] = 4 * u[0],
+	        [1, 1] = 2 * u[1]
+	    };
+	}
+	DenseVector force = new DenseVector ( 2 ) { [0] = 3, [1] = 3 };
+	Solver solver = Solver.Builder
+	    .Solve ( 2, Function, Stiffness )
+	    .Under ( force )
+	    .WithInitialConditions ( 0.1, DenseVector.Create ( 2, 0 ), DenseVector.Create ( 2, 1 ) )
+	    .UsingStandardNewtonRaphsonScheme ( 0.01 )
+	    .Build ( );
+	List<LoadState> states = solver.Broadcast ( ).TakeWhile ( x => x.Lambda <= 1 ).ToList ( );
+	AssertSolutionsAreCorrect ( Function, force, states );
 }
-public void TestMethod4()
-{
-    IFunction function = new Function4();
-    ISolver solver = new Solver();
-    Vector<double> force = DenseVector.Create(2, 2);
-    ProblemDefinition input = new ProblemDefinition
-    {
-        Force = force,
-        Function = function,
-        FirstLambdaValue = 1,
-        LastLambdaValue = 1,
-        MaxIncrements = 10,
-        MaxIterations = 10,
-        Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
-        Beta = 1,
-        InitialApproximation = DenseVector.Create(2, 0.1)
-    };
-    SolverReport report = solver.Solve(input);
-    Vector<double> realSolution = DenseVector.Create(2, 1);
-    Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
-}
-```
-### Example 5 <a name="example5"></a>
 
-```c#
-public class Function4 : IFunction
-{
-    public Matrix<double> GetTangentMatrix(Vector<double> u)
-    {
-        double x = u[0];
-        double y = u[1];
-        return new DenseMatrix(2, 2)
-        {
-            [0, 0] = 2 * x + y,
-            [0, 1] = x,
-            [1, 0] = 1,
-            [1, 1] = 1,
-        };
-    }
-
-    public Vector<double> GetImage(Vector<double> u)
-    {
-        double x = u[0];
-        double y = u[1];
-        return new DenseVector(2)
-        {
-            [0] = Math.Pow(x, 2) + y * x,
-            [1] = x + y
-        };
-    }
+[Test]
+public void SolveQuadraticFunctionArcLength() {
+	Vector<double> Function( Vector<double> u ) {
+	    return new DenseVector ( 2 ) {
+	        [0] = u[0] * u[0] + 2 * u[1] * u[1],
+	        [1] = 2 * u[0] * u[0] + u[1] * u[1]
+	    };
+	}
+	Matrix<double> Stiffness( Vector<double> u ) {
+	    return new DenseMatrix ( 2, 2 ) {
+	        [0, 0] = 2 * u[0],
+	        [0, 1] = 4 * u[1],
+	        [1, 0] = 4 * u[0],
+	        [1, 1] = 2 * u[1]
+	    };
+	}
+	DenseVector force = new DenseVector ( 2 ) { [0] = 3, [1] = 3 };
+	Solver solver = Solver.Builder
+	    .Solve ( 2, Function, Stiffness )
+	    .Under ( force )
+	    .WithInitialConditions ( 0.1, DenseVector.Create ( 2, 0 ), DenseVector.Create ( 2, 1 ) )
+	    .UsingArcLengthScheme ( 0.05 )
+	    .NormalizeLoadWith ( 0.01 )
+	    .Build ( );
+	List<LoadState> states = solver.Broadcast ( ).TakeWhile ( x => x.Lambda <= 10 ).ToList ( );
+	AssertSolutionsAreCorrect ( Function, force, states );
 }
-public void TestMethod5()
-{
-    IFunction function = new Function4();
-    ISolver solver = new Solver();
-    Vector<double> force = DenseVector.Create(2, 2);
-    ProblemDefinition input = new ProblemDefinition
-    {
-        Force = force,
-        Function = function,
-        FirstLambdaValue = 0.1,
-        LastLambdaValue = 1,
-        MaxIncrements = 10,
-        MaxIterations = 10,
-        Tolerances = new ErrorTolerancesInfo(1e-3, 1e-3, 1e-3, 1e-3),
-        Beta = 1,
-        InitialApproximation = DenseVector.Create(2, 0.1)
-    };
-    SolverReport report = solver.Solve(input);
-    Vector<double> realSolution = DenseVector.Create(2, 1);
-    Assert.IsTrue(report.Convergence && (report.Solution - realSolution).Norm(2) <= 1e-3);
+
+void AssertSolutionIsCorrect( Vector<double> solution ) {
+	double first = solution.First ( );
+	foreach (double d in solution) {
+	    Assert.AreEqual ( first, d, numberTolerance );
+	}
+	}
+	void AssertSolutionsAreCorrect( Func<Vector<double>, Vector<double>> reaction, Vector<double> force, List<LoadState> states ) {
+	foreach (LoadState state in states) {
+	    AssertSolutionIsCorrect ( state.Displacement );
+	    TestUtils.AssertAreCloseEnough ( reaction ( state.Displacement ), state.Lambda * force, tolerance );
+	}
 }
 ```
