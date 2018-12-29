@@ -26,7 +26,7 @@ namespace NonLinearEquationsSolver {
             int maxIter = 10;
 
             // When
-            Solver solver = Solver.Builder
+            SolverND solverNd = SolverND.NdBuilder
                 .Solve ( 2, Reaction, Stiffness )
                 .Under ( referenceLoad )
                 .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -38,16 +38,16 @@ namespace NonLinearEquationsSolver {
                 .Build ( );
 
             // Then
-            Assert.AreEqual ( referenceLoad, solver.Info.ReferenceLoad );
-            Assert.AreEqual ( initialLoad, solver.Info.InitialLoad );
-            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solver.Info.Stiffness );
-            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solver.Info.Reaction );
-            Assert.AreEqual ( initialLoadFactor, solver.State.Lambda );
-            Assert.AreEqual ( initialDisplacement, solver.State.Displacement );
-            Assert.AreEqual ( typeof ( CorrectionSchemeArcLength ), solver.Corrector.Scheme.GetType ( ) );
-            CorrectionSchemeArcLength scheme = (CorrectionSchemeArcLength)solver.Corrector.Scheme;
+            Assert.AreEqual ( referenceLoad, solverNd.Info.ReferenceLoad );
+            Assert.AreEqual ( initialLoad, solverNd.Info.InitialLoad );
+            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solverNd.Info.Stiffness );
+            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solverNd.Info.Reaction );
+            Assert.AreEqual ( initialLoadFactor, solverNd.State.Lambda );
+            Assert.AreEqual ( initialDisplacement, solverNd.State.Displacement );
+            Assert.AreEqual ( typeof ( CorrectionSchemeArcLength ), solverNd.Corrector.Scheme.GetType ( ) );
+            CorrectionSchemeArcLength scheme = (CorrectionSchemeArcLength)solverNd.Corrector.Scheme;
             Assert.AreEqual ( typeof ( RestoringMethod ), scheme.DisplacementChooser.GetType ( ) );
-            Assert.AreEqual ( maxIter, solver.Corrector.MaximumIterations );
+            Assert.AreEqual ( maxIter, solverNd.Corrector.MaximumIterations );
         }
         [Test]
         public void AngleArcLengthSolverIsCorrectlyBuild() {
@@ -67,7 +67,7 @@ namespace NonLinearEquationsSolver {
             int maxIter = 10;
 
             // When
-            Solver solver = Solver.Builder
+            SolverND solverNd = SolverND.NdBuilder
                 .Solve ( 2, Reaction, Stiffness )
                 .Under ( referenceLoad )
                 .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -79,16 +79,16 @@ namespace NonLinearEquationsSolver {
                 .Build ( );
 
             // Then
-            Assert.AreEqual ( referenceLoad, solver.Info.ReferenceLoad );
-            Assert.AreEqual ( initialLoad, solver.Info.InitialLoad );
-            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solver.Info.Stiffness );
-            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solver.Info.Reaction );
-            Assert.AreEqual ( initialLoadFactor, solver.State.Lambda );
-            Assert.AreEqual ( initialDisplacement, solver.State.Displacement );
-            Assert.AreEqual ( typeof ( CorrectionSchemeArcLength ), solver.Corrector.Scheme.GetType ( ) );
-            CorrectionSchemeArcLength scheme = (CorrectionSchemeArcLength)solver.Corrector.Scheme;
+            Assert.AreEqual ( referenceLoad, solverNd.Info.ReferenceLoad );
+            Assert.AreEqual ( initialLoad, solverNd.Info.InitialLoad );
+            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solverNd.Info.Stiffness );
+            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solverNd.Info.Reaction );
+            Assert.AreEqual ( initialLoadFactor, solverNd.State.Lambda );
+            Assert.AreEqual ( initialDisplacement, solverNd.State.Displacement );
+            Assert.AreEqual ( typeof ( CorrectionSchemeArcLength ), solverNd.Corrector.Scheme.GetType ( ) );
+            CorrectionSchemeArcLength scheme = (CorrectionSchemeArcLength)solverNd.Corrector.Scheme;
             Assert.AreEqual ( typeof ( AngleMethod ), scheme.DisplacementChooser.GetType ( ) );
-            Assert.AreEqual ( maxIter, solver.Corrector.MaximumIterations );
+            Assert.AreEqual ( maxIter, solverNd.Corrector.MaximumIterations );
         }
         [Test]
         public void StandardSolverIsCorrectlyBuild() {
@@ -107,7 +107,7 @@ namespace NonLinearEquationsSolver {
             double dlambda = 0.1;
 
             // When
-            Solver solver = Solver.Builder
+            SolverND solverNd = SolverND.NdBuilder
                 .Solve ( 2, Reaction, Stiffness )
                 .Under ( referenceLoad )
                 .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -117,14 +117,14 @@ namespace NonLinearEquationsSolver {
                 .Build ( );
 
             // Then
-            Assert.AreEqual ( referenceLoad, solver.Info.ReferenceLoad );
-            Assert.AreEqual ( initialLoad, solver.Info.InitialLoad );
-            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solver.Info.Stiffness );
-            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solver.Info.Reaction );
-            Assert.AreEqual ( initialLoadFactor, solver.State.Lambda );
-            Assert.AreEqual ( initialDisplacement, solver.State.Displacement );
-            Assert.AreEqual ( typeof ( CorrectionSchemeStandard ), solver.Corrector.Scheme.GetType ( ) );
-            Assert.AreEqual ( maxIter, solver.Corrector.MaximumIterations );
+            Assert.AreEqual ( referenceLoad, solverNd.Info.ReferenceLoad );
+            Assert.AreEqual ( initialLoad, solverNd.Info.InitialLoad );
+            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solverNd.Info.Stiffness );
+            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solverNd.Info.Reaction );
+            Assert.AreEqual ( initialLoadFactor, solverNd.State.Lambda );
+            Assert.AreEqual ( initialDisplacement, solverNd.State.Displacement );
+            Assert.AreEqual ( typeof ( CorrectionSchemeStandard ), solverNd.Corrector.Scheme.GetType ( ) );
+            Assert.AreEqual ( maxIter, solverNd.Corrector.MaximumIterations );
         }
         [Test]
         public void WorkControlSolverIsCorrectlyBuild() {
@@ -143,7 +143,7 @@ namespace NonLinearEquationsSolver {
             int maxIter = 10;
 
             // When
-            Solver solver = Solver.Builder
+            SolverND solverNd = SolverND.NdBuilder
                 .Solve ( 2, Reaction, Stiffness )
                 .Under ( referenceLoad )
                 .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -153,16 +153,16 @@ namespace NonLinearEquationsSolver {
                 .Build ( );
 
             // Then
-            Assert.AreEqual ( referenceLoad, solver.Info.ReferenceLoad );
-            Assert.AreEqual ( initialLoad, solver.Info.InitialLoad );
-            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solver.Info.Stiffness );
-            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solver.Info.Reaction );
-            Assert.AreEqual ( initialLoadFactor, solver.State.Lambda );
-            Assert.AreEqual ( initialDisplacement, solver.State.Displacement );
-            Assert.AreEqual ( typeof ( CorrectionSchemeWorkControl ), solver.Corrector.Scheme.GetType ( ) );
-            CorrectionSchemeWorkControl scheme = (CorrectionSchemeWorkControl)solver.Corrector.Scheme;
+            Assert.AreEqual ( referenceLoad, solverNd.Info.ReferenceLoad );
+            Assert.AreEqual ( initialLoad, solverNd.Info.InitialLoad );
+            Assert.AreEqual ( (Func<Vector<double>, Matrix<double>>)Stiffness, solverNd.Info.Stiffness );
+            Assert.AreEqual ( (Func<Vector<double>, Vector<double>>)Reaction, solverNd.Info.Reaction );
+            Assert.AreEqual ( initialLoadFactor, solverNd.State.Lambda );
+            Assert.AreEqual ( initialDisplacement, solverNd.State.Displacement );
+            Assert.AreEqual ( typeof ( CorrectionSchemeWorkControl ), solverNd.Corrector.Scheme.GetType ( ) );
+            CorrectionSchemeWorkControl scheme = (CorrectionSchemeWorkControl)solverNd.Corrector.Scheme;
             Assert.AreEqual ( w, scheme.WorkIncrement );
-            Assert.AreEqual ( maxIter, solver.Corrector.MaximumIterations );
+            Assert.AreEqual ( maxIter, solverNd.Corrector.MaximumIterations );
         }
         [Test]
         public void StandardSolverWithoutReactionLaunchesException() {
@@ -179,7 +179,7 @@ namespace NonLinearEquationsSolver {
             bool exceptionLaunched = false;
             try {
                 // When
-                Solver solver = Solver.Builder
+                SolverND solverNd = SolverND.NdBuilder
                     .Under ( referenceLoad )
                     .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
                     .UntilTolerancesReached ( dispTol, eqTol, enTol )
@@ -203,7 +203,7 @@ namespace NonLinearEquationsSolver {
             double dlambda = 0.1;
 
             // When
-            Solver solver = Solver.Builder
+            SolverND solverNd = SolverND.NdBuilder
                 .Solve ( 2, Reaction, Stiffness )
                 .Under ( referenceLoad )
                 .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -211,11 +211,11 @@ namespace NonLinearEquationsSolver {
                 .Build ( );
 
             // Then
-            Assert.AreEqual ( 50, solver.Corrector.MaximumIterations );
+            Assert.AreEqual ( 50, solverNd.Corrector.MaximumIterations );
             bool allVerify = new[] { 1e-3, 1e-3, 1e-3 }
                 .Select ( ( tol, index ) => new {
                     ExpectedTolerance = tol,
-                    Tolerance = solver.Corrector.Tolerances[index]
+                    Tolerance = solverNd.Corrector.Tolerances[index]
                 } )
                 .All ( tol => tol.ExpectedTolerance == tol.Tolerance );
             Assert.IsTrue ( allVerify );
@@ -233,7 +233,7 @@ namespace NonLinearEquationsSolver {
             bool exceptionLaunched = false;
             try {
                 // When
-                Solver solver = Solver.Builder
+                SolverND solverNd = SolverND.NdBuilder
                     .Solve ( 2, Reaction, Stiffness )
                     .Under ( referenceLoad )
                     .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -259,7 +259,7 @@ namespace NonLinearEquationsSolver {
             bool exceptionLaunched = false;
             try {
                 // When
-                Solver solver = Solver.Builder
+                SolverND solverNd = SolverND.NdBuilder
                     .Solve ( 2, Reaction, Stiffness )
                     .Under ( referenceLoad )
                     .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )
@@ -285,7 +285,7 @@ namespace NonLinearEquationsSolver {
             bool exceptionLaunched = false;
             try {
                 // When
-                Solver solver = Solver.Builder
+                SolverND solverNd = SolverND.NdBuilder
                     .Solve ( 2, Reaction, Stiffness )
                     .Under ( referenceLoad )
                     .WithInitialConditions ( initialLoadFactor, initialLoad, initialDisplacement )

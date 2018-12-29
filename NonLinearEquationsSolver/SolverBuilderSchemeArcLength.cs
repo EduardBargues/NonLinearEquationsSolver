@@ -1,31 +1,31 @@
 namespace NonLinearEquationsSolver {
-    public partial class Solver {
-        public class SolverBuilderSchemeArcLength : SolverBuilder {
+    public partial class SolverND {
+        public class SolverNdBuilderSchemeArcLength : SolverNdBuilder {
 
-            public SolverBuilderSchemeArcLength( Solver solver, double radius ) {
-                Solver = solver;
-                Solver.Predictor.Scheme = new PredictionSchemeArcLength ( radius );
-                Solver.Corrector.Scheme = new CorrectionSchemeArcLength ( radius );
+            public SolverNdBuilderSchemeArcLength( SolverND solverNd, double radius ) {
+                SolverNd = solverNd;
+                SolverNd.Predictor.Scheme = new PredictionSchemeArcLength ( radius );
+                SolverNd.Corrector.Scheme = new CorrectionSchemeArcLength ( radius );
             }
 
-            public SolverBuilderSchemeArcLength NormalizeLoadWith( double beta ) {
-                PredictionSchemeArcLength arcLengthPredictionScheme = (PredictionSchemeArcLength)Solver.Predictor.Scheme;
+            public SolverNdBuilderSchemeArcLength NormalizeLoadWith( double beta ) {
+                PredictionSchemeArcLength arcLengthPredictionScheme = (PredictionSchemeArcLength)SolverNd.Predictor.Scheme;
                 arcLengthPredictionScheme.Beta = beta;
-                CorrectionSchemeArcLength arcLengthCorrectionScheme = (CorrectionSchemeArcLength)Solver.Corrector.Scheme;
+                CorrectionSchemeArcLength arcLengthCorrectionScheme = (CorrectionSchemeArcLength)SolverNd.Corrector.Scheme;
                 arcLengthCorrectionScheme.Beta = beta;
                 return this;
             }
-            public SolverBuilderSchemeArcLength WithRestoringMethodInCorrectionPhase() {
-                CorrectionSchemeArcLength arcLengthCorrectionScheme = (CorrectionSchemeArcLength)Solver.Corrector.Scheme;
+            public SolverNdBuilderSchemeArcLength WithRestoringMethodInCorrectionPhase() {
+                CorrectionSchemeArcLength arcLengthCorrectionScheme = (CorrectionSchemeArcLength)SolverNd.Corrector.Scheme;
                 arcLengthCorrectionScheme.DisplacementChooser = new RestoringMethod ( );
                 return this;
             }
-            public SolverBuilderSchemeArcLength WithAngleMethodInCorrectionPhase() {
-                CorrectionSchemeArcLength arcLengthCorrectionScheme = (CorrectionSchemeArcLength)Solver.Corrector.Scheme;
+            public SolverNdBuilderSchemeArcLength WithAngleMethodInCorrectionPhase() {
+                CorrectionSchemeArcLength arcLengthCorrectionScheme = (CorrectionSchemeArcLength)SolverNd.Corrector.Scheme;
                 arcLengthCorrectionScheme.DisplacementChooser = new AngleMethod ( );
                 return this;
             }
-            SolverBuilderSchemeArcLength AllowRadiusToChange( int maximumNumberOfCorrections ) =>
+            SolverNdBuilderSchemeArcLength AllowRadiusToChange( int maximumNumberOfCorrections ) =>
                 // TODO: allow arc length radius to change in both the prediction and correction phase.
                 this;
         }

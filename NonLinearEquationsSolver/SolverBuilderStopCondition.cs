@@ -1,9 +1,9 @@
 ﻿namespace NonLinearEquationsSolver {
-    public partial class Solver {
-        public class SolverBuilderStopCondition : SolverBuilder {
-            public SolverBuilderStopCondition( Solver solver, double displacementTolerance, double equilibriumTolerance, double energyTolerance ) {
-                Solver = solver;
-                Solver.Corrector.Tolerances = new[]
+    public partial class SolverND {
+        public class SolverNdBuilderStopCondition : SolverNdBuilder {
+            public SolverNdBuilderStopCondition( SolverND solverNd, double displacementTolerance, double equilibriumTolerance, double energyTolerance ) {
+                SolverNd = solverNd;
+                SolverNd.Corrector.Tolerances = new[]
                     {displacementTolerance, equilibriumTolerance, energyTolerance};
             }
         }

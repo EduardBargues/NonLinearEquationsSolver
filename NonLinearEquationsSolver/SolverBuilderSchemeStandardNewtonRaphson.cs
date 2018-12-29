@@ -1,11 +1,11 @@
 ﻿namespace NonLinearEquationsSolver {
-    public partial class Solver {
-        public class SolverBuilderSchemeStandardNewtonRaphson : SolverBuilder {
+    public partial class SolverND {
+        public class SolverNdBuilderSchemeStandardNewtonRaphson : SolverNdBuilder {
 
-            public SolverBuilderSchemeStandardNewtonRaphson( Solver solver, double dlambda ) {
-                Solver = solver;
-                Solver.Predictor.Scheme = new PredictionSchemeStandard ( dlambda );
-                Solver.Corrector.Scheme = new CorrectionSchemeStandard ( );
+            public SolverNdBuilderSchemeStandardNewtonRaphson( SolverND solverNd, double dlambda ) {
+                SolverNd = solverNd;
+                SolverNd.Predictor.Scheme = new PredictionSchemeStandard ( dlambda );
+                SolverNd.Corrector.Scheme = new CorrectionSchemeStandard ( );
             }
         }
     }

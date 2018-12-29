@@ -2,51 +2,51 @@
 using System;
 
 namespace NonLinearEquationsSolver {
-    public partial class Solver {
-        public class SolverBuilder {
+    public partial class SolverND {
+        public class SolverNdBuilder {
 
-            protected Solver Solver = new Solver ( );
+            protected SolverND SolverNd = new SolverND ( );
 
             /// <summary>
-            /// First method to be called while constructing a solver.
+            /// First method to be called while constructing a solverNd.
             /// </summary>
             /// <param name="degreesOfFreedom"></param>
             /// <param name="structure"></param>
             /// <param name="stiffness"></param>
             /// <returns></returns>
-            public SolverBuilderStructure Solve( int degreesOfFreedom, Func<Vector<double>, Vector<double>> structure, Func<Vector<double>, Matrix<double>> stiffness ) =>
-                new SolverBuilderStructure ( degreesOfFreedom, Solver, structure, stiffness );
-            public SolverBuilderIncrementalLoad Under( Vector<double> referenceLoad ) =>
-                new SolverBuilderIncrementalLoad ( Solver, referenceLoad );
-            public SolverBuilderSchemeStandardNewtonRaphson UsingStandardNewtonRaphsonScheme( double loadFactorIncrement ) {
+            public SolverNdBuilderStructure Solve( int degreesOfFreedom, Func<Vector<double>, Vector<double>> structure, Func<Vector<double>, Matrix<double>> stiffness ) =>
+                new SolverNdBuilderStructure ( degreesOfFreedom, SolverNd, structure, stiffness );
+            public SolverNdBuilderIncrementalLoad Under( Vector<double> referenceLoad ) =>
+                new SolverNdBuilderIncrementalLoad ( SolverNd, referenceLoad );
+            public SolverNdBuilderSchemeStandardNewtonRaphson UsingStandardNewtonRaphsonScheme( double loadFactorIncrement ) {
                 if (loadFactorIncrement <= 0) {
                     throw new InvalidOperationException ( Strings.LoadIncrementLargerThanZero );
                 }
-                return new SolverBuilderSchemeStandardNewtonRaphson ( Solver, loadFactorIncrement );
+                return new SolverNdBuilderSchemeStandardNewtonRaphson ( SolverNd, loadFactorIncrement );
             }
-            public SolverBuilderSchemeArcLength UsingArcLengthScheme( double radius ) {
+            public SolverNdBuilderSchemeArcLength UsingArcLengthScheme( double radius ) {
                 if (radius <= 0) {
                     throw new InvalidOperationException ( Strings.ArcLengthRadiusLargerThanZero );
                 }
-                return new SolverBuilderSchemeArcLength ( Solver, radius );
+                return new SolverNdBuilderSchemeArcLength ( SolverNd, radius );
             }
-            public SolverBuilderSchemeWorkControl UsingWorkControlScheme( double work ) {
+            public SolverNdBuilderSchemeWorkControl UsingWorkControlScheme( double work ) {
                 if (work <= 0) {
                     throw new InvalidOperationException ( Strings.WorkControlValueLargerThanZero );
                 }
-                return new SolverBuilderSchemeWorkControl ( Solver, work );
+                return new SolverNdBuilderSchemeWorkControl ( SolverNd, work );
             }
-            public SolverBuilderStopCondition UntilTolerancesReached( double displacement, double equilibrium,
-                double energy ) => new SolverBuilderStopCondition ( Solver, displacement, equilibrium, energy );
-            public SolverBuilder WithMaximumCorrectionIterations( int maximumCorrectionIterations ) {
+            public SolverNdBuilderStopCondition UntilTolerancesReached( double displacement, double equilibrium,
+                double energy ) => new SolverNdBuilderStopCondition ( SolverNd, displacement, equilibrium, energy );
+            public SolverNdBuilder WithMaximumCorrectionIterations( int maximumCorrectionIterations ) {
                 if (maximumCorrectionIterations <= 0) {
                     throw new InvalidOperationException ( Strings.MaximumNumberOfIterationsLargerThanZero );
                 }
-                Solver.Corrector.MaximumIterations = maximumCorrectionIterations;
+                SolverNd.Corrector.MaximumIterations = maximumCorrectionIterations;
                 return this;
             }
 
-            public Solver Build() => Solver;
+            public SolverND Build() => SolverNd;
         }
     }
 }

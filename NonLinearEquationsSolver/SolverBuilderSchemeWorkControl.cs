@@ -1,17 +1,17 @@
 ﻿namespace NonLinearEquationsSolver {
-    public partial class Solver {
-        public class SolverBuilderSchemeWorkControl : SolverBuilder {
+    public partial class SolverND {
+        public class SolverNdBuilderSchemeWorkControl : SolverNdBuilder {
 
-            public SolverBuilderSchemeWorkControl( Solver solver, double work ) {
-                Solver = solver;
-                Solver.Predictor.Scheme = new PredictionSchemeWorkControl ( work );
-                Solver.Corrector.Scheme = new CorrectionSchemeWorkControl ( work );
+            public SolverNdBuilderSchemeWorkControl( SolverND solverNd, double work ) {
+                SolverNd = solverNd;
+                SolverNd.Predictor.Scheme = new PredictionSchemeWorkControl ( work );
+                SolverNd.Corrector.Scheme = new CorrectionSchemeWorkControl ( work );
             }
 
-            public SolverBuilderSchemeWorkControl WithIncrementWorkControl( double workIncrement ) {
-                PredictionSchemeWorkControl workControlPredictionScheme = (PredictionSchemeWorkControl)Solver.Predictor.Scheme;
+            public SolverNdBuilderSchemeWorkControl WithIncrementWorkControl( double workIncrement ) {
+                PredictionSchemeWorkControl workControlPredictionScheme = (PredictionSchemeWorkControl)SolverNd.Predictor.Scheme;
                 workControlPredictionScheme.WorkIncrement = workIncrement;
-                CorrectionSchemeWorkControl workControlCorectionScheme = (CorrectionSchemeWorkControl)Solver.Corrector.Scheme;
+                CorrectionSchemeWorkControl workControlCorectionScheme = (CorrectionSchemeWorkControl)SolverNd.Corrector.Scheme;
                 workControlCorectionScheme.WorkIncrement = workIncrement;
                 return this;
             }

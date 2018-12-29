@@ -1,17 +1,17 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
 
 namespace NonLinearEquationsSolver {
-    public partial class Solver {
-        public class SolverBuilderIncrementalLoad : SolverBuilder {
+    public partial class SolverND {
+        public class SolverNdBuilderIncrementalLoad : SolverNdBuilder {
 
-            public SolverBuilderIncrementalLoad( Solver solver, Vector<double> referenceLoad ) {
-                Solver = solver;
-                Solver.Info.ReferenceLoad = referenceLoad;
+            public SolverNdBuilderIncrementalLoad( SolverND solverNd, Vector<double> referenceLoad ) {
+                SolverNd = solverNd;
+                SolverNd.Info.ReferenceLoad = referenceLoad;
             }
 
-            public SolverBuilderIncrementalLoad WithInitialConditions( double lambda, Vector<double> load, Vector<double> displacement ) {
-                Solver.Info.InitialLoad = load;
-                Solver.State = new LoadState ( lambda, displacement );
+            public SolverNdBuilderIncrementalLoad WithInitialConditions( double lambda, Vector<double> load, Vector<double> displacement ) {
+                SolverNd.Info.InitialLoad = load;
+                SolverNd.State = new LoadState ( lambda, displacement );
                 return this;
             }
         }
