@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NonLinearEquationsSolver", "NonLinearEquationsSolver\NonLinearEquationsSolver.csproj", "{F5DCFF06-4B18-4EB7-A726-F49750B78FC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLES.Tests", "NLES.Tests\NLES.Tests.csproj", "{43DE4B88-197E-4FE0-8692-27081BFE0A3F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLES", "NLES\NLES.csproj", "{5AECAD70-3AE2-4CDB-A556-2E87C99CCFAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLES.ConsoleApp", "NLES.ConsoleApp\NLES.ConsoleApp.csproj", "{DFB51E35-42E2-4B8E-9E96-B9204B2705B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F5DCFF06-4B18-4EB7-A726-F49750B78FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5DCFF06-4B18-4EB7-A726-F49750B78FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5DCFF06-4B18-4EB7-A726-F49750B78FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5DCFF06-4B18-4EB7-A726-F49750B78FC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43DE4B88-197E-4FE0-8692-27081BFE0A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43DE4B88-197E-4FE0-8692-27081BFE0A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43DE4B88-197E-4FE0-8692-27081BFE0A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43DE4B88-197E-4FE0-8692-27081BFE0A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AECAD70-3AE2-4CDB-A556-2E87C99CCFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AECAD70-3AE2-4CDB-A556-2E87C99CCFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AECAD70-3AE2-4CDB-A556-2E87C99CCFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AECAD70-3AE2-4CDB-A556-2E87C99CCFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB51E35-42E2-4B8E-9E96-B9204B2705B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB51E35-42E2-4B8E-9E96-B9204B2705B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB51E35-42E2-4B8E-9E96-B9204B2705B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB51E35-42E2-4B8E-9E96-B9204B2705B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
