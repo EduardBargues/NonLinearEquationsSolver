@@ -137,7 +137,7 @@ namespace NonLinearEquationsSolver
         }
 
         [Fact]
-        public void StandardSolverWithoutReactionLaunchesException()
+        public void StandardSolverWithoutReactionDoesNotLaunchException()
         {
             //Given 
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
@@ -154,6 +154,7 @@ namespace NonLinearEquationsSolver
             {
                 // When
                 Solver Solver = Solver.Builder
+                    .Solve(2, v => v, v => new DenseMatrix(2))
                     .Under(referenceLoad)
                     .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
                     .UntilTolerancesReached(dispTol, eqTol, enTol)
@@ -165,7 +166,7 @@ namespace NonLinearEquationsSolver
                 // Then
                 exceptionLaunched = true;
             }
-            Assert.True(exceptionLaunched);
+            Assert.False(exceptionLaunched);
         }
 
         [Fact]

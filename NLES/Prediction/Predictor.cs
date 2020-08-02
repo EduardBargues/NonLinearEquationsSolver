@@ -15,7 +15,7 @@ namespace NLES.Prediction
             Vector<double> Dvt = mK.Solve(info.ReferenceLoad);
             Vector<double> Dvr = mK.Solve(equilibrium);
             double bergam = GetBergamParameter(initialStiffness, Dvt, info);
-            double DLambda = Scheme.GetPrediction(Dvt, info.ReferenceLoad) * Math.Sign(bergam);
+            double DLambda = Scheme.Predict(Dvt, info.ReferenceLoad) * Math.Sign(bergam);
             Vector<double> Dv = DLambda * Dvt + Dvr;
 
             return new LoadIncrementalState(DLambda, Dv);

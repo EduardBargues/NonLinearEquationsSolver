@@ -9,24 +9,50 @@ namespace NLES
     {
         public class SolverBuilderStructure : SolverBuilder
         {
-
-            public SolverBuilderStructure(int degreesOfFreedom, Solver solver, Func<Vector<double>, Vector<double>> structure, Func<Vector<double>, Matrix<double>> stiffness)
+            public SolverBuilderStructure(
+                int degreesOfFreedom
+                , Solver solver
+                , Func<Vector<double>, Vector<double>> reaction
+                , Func<Vector<double>, Matrix<double>> stiffness)
             {
-                if (degreesOfFreedom <= 0)
-                {
-                    throw new InvalidOperationException(Strings.DegreesOfFreedomLargerThanZero);
-                }
+                CheckDregreesOfFreedom(degreesOfFreedom);
+                CheckReaction(reaction);
+                CheckStiffness(stiffness);
 
                 Solver = solver;
                 Solver.State = new LoadState(0, new DenseVector(degreesOfFreedom));
                 Solver.Info = new StructureInfo
                 {
                     InitialLoad = new DenseVector(degreesOfFreedom),
-                    Reaction = structure,
+                    Reaction = reaction,
                     ReferenceLoad = new DenseVector(degreesOfFreedom),
                     Stiffness = stiffness,
                 };
-                Solver.Info.Reaction = structure;
+                Solver.Info.Reaction = reaction;
+            }
+
+            private static void CheckStiffness(Func<Vector<double>, Matrix<double>> stiffness)
+            {
+                if (stiffness == null)
+                {
+                    throw new InvalidOperationException(Strings.StiffnessMustBeDefined);
+                }
+            }
+
+            private static void CheckReaction(Func<Vector<double>, Vector<double>> reaction)
+            {
+                if (reaction == null)
+                {
+                    throw new InvalidOperationException(Strings.ReactionMustBeDefined);
+                }
+            }
+
+            private static void CheckDregreesOfFreedom(int degreesOfFreedom)
+            {
+                if (degreesOfFreedom <= 0)
+                {
+                    throw new InvalidOperationException(Strings.DegreesOfFreedomLargerThanZero);
+                }
             }
         }
     }

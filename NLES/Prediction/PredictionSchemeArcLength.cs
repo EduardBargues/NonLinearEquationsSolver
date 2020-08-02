@@ -11,7 +11,7 @@ namespace NLES.Prediction
 
         internal PredictionSchemeArcLength(double radius) => Radius = radius;
 
-        public double GetPrediction(Vector<double> Dvt, Vector<double> fr)
+        public double Predict(Vector<double> Dvt, Vector<double> fr)
         {
             double dispDotProduct = Dvt.DotProduct(Dvt);
             double forceDotProduct = fr.DotProduct(fr);

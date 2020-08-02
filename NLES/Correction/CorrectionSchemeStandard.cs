@@ -6,7 +6,7 @@ namespace NLES.Correction
 {
     internal class CorrectionSchemeStandard : ICorrectionScheme
     {
-        public Result<LoadIncrementalState> GetCorrection(
+        public Result<LoadIncrementalState> Correct(
             LoadState state
             , LoadIncrementalState prediction
             , StructureInfo info

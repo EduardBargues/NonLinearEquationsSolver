@@ -5,7 +5,7 @@ namespace NLES.Correction
 {
     internal interface ICorrectionScheme
     {
-        Result<LoadIncrementalState> GetCorrection(LoadState state,
+        Result<LoadIncrementalState> Correct(LoadState state,
             LoadIncrementalState prediction,
             StructureInfo info,
             Vector<double> dut,

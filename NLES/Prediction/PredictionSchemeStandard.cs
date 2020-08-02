@@ -8,6 +8,6 @@ namespace NLES.Prediction
 
         internal PredictionSchemeStandard(double dlambda) => DLambda = dlambda;
 
-        public double GetPrediction(Vector<double> Dvt, Vector<double> fr) => DLambda;
+        public double Predict(Vector<double> Dvt, Vector<double> fr) => DLambda;
     }
 }

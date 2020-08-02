@@ -15,7 +15,7 @@ namespace NLES.Correction
 
         internal CorrectionSchemeArcLength(double radius) => Radius = radius;
 
-        public Result<LoadIncrementalState> GetCorrection(LoadState state,
+        public Result<LoadIncrementalState> Correct(LoadState state,
                                                    LoadIncrementalState prediction,
                                                    StructureInfo info,
                                                    Vector<double> dut,

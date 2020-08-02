@@ -8,7 +8,7 @@ namespace NLES
     {
         internal Func<Vector<double>, Vector<double>> Reaction { get; set; }
         internal Vector<double> ReferenceLoad { get; set; }
-        internal Vector<double> InitialLoad { get; set; } = new DenseVector(3);
+        internal Vector<double> InitialLoad { get; set; }
         internal Func<Vector<double>, Matrix<double>> Stiffness { get; set; }
     }
 }

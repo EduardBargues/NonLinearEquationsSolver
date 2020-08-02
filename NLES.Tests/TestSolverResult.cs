@@ -20,12 +20,12 @@ namespace NonLinearEquationsSolver
         public void SolveLinearFunction()
         {
             // ARRANGE
-            static Vector<double> Function(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
             static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
             DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
             Solver Solver = Solver.Builder
-                .Solve(2, Function, Stiffness)
+                .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .Build();
 
@@ -33,20 +33,20 @@ namespace NonLinearEquationsSolver
             List<LoadState> states = Solver.Broadcast().Take(2).ToList();
 
             // ASSERT
-            AssertSolutionsAreCorrect(Function, force, states);
+            AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
         [Fact]
         public void SolveLinearFunctionSmallIncrements()
         {
             // ARRANGE
-            static Vector<double> Function(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
             static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
             DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
             double inc = 1e-2;
             Solver Solver = Solver.Builder
-                .Solve(2, Function, Stiffness)
+                .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .UsingStandardNewtonRaphsonScheme(inc)
                 .Build();
@@ -56,20 +56,20 @@ namespace NonLinearEquationsSolver
 
             // ASSERT
             Assert.Equal((int)(1 / inc) - 1, states.Count);
-            AssertSolutionsAreCorrect(Function, force, states);
+            AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
         [Fact]
         public void SolveLinearFunctionArcLength()
         {
             // ARRANGE
-            static Vector<double> Function(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
             static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
             DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
             double radius = 1e-2;
             Solver Solver = Solver.Builder
-                .Solve(2, Function, Stiffness)
+                .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .UsingArcLengthScheme(radius)
                 .Build();
@@ -78,14 +78,14 @@ namespace NonLinearEquationsSolver
             List<LoadState> states = Solver.Broadcast().TakeWhile(s => s.Lambda <= 1).ToList();
 
             // ASSERT
-            AssertSolutionsAreCorrect(Function, force, states);
+            AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
         [Fact]
         public void SolveQuadraticFunction()
         {
             // ARRANGE
-            static Vector<double> Function(Vector<double> u) => new DenseVector(2)
+            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2)
             {
                 [0] = u[0] * u[0] + 2 * u[1] * u[1],
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
@@ -100,7 +100,7 @@ namespace NonLinearEquationsSolver
             };
             DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
             Solver Solver = Solver.Builder
-                .Solve(2, Function, Stiffness)
+                .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
                 .Build();
@@ -109,14 +109,14 @@ namespace NonLinearEquationsSolver
             List<LoadState> states = Solver.Broadcast().TakeWhile(x => x.Lambda <= 1).ToList();
 
             // ASSERT
-            AssertSolutionsAreCorrect(Function, force, states);
+            AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
         [Fact]
         public void SolveQuadraticFunctionSmallIncrements()
         {
             // ARRANGE
-            static Vector<double> Function(Vector<double> u) => new DenseVector(2)
+            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2)
             {
                 [0] = u[0] * u[0] + 2 * u[1] * u[1],
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
@@ -131,7 +131,7 @@ namespace NonLinearEquationsSolver
             };
             DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
             Solver Solver = Solver.Builder
-                .Solve(2, Function, Stiffness)
+                .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
                 .UsingStandardNewtonRaphsonScheme(0.01)
@@ -141,14 +141,14 @@ namespace NonLinearEquationsSolver
             List<LoadState> states = Solver.Broadcast().TakeWhile(x => x.Lambda <= 1).ToList();
 
             // ASSERT
-            AssertSolutionsAreCorrect(Function, force, states);
+            AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
         [Fact]
         public void SolveQuadraticFunctionArcLength()
         {
             // ARRANGE
-            static Vector<double> Function(Vector<double> u) => new DenseVector(2)
+            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2)
             {
                 [0] = u[0] * u[0] + 2 * u[1] * u[1],
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
@@ -163,7 +163,7 @@ namespace NonLinearEquationsSolver
             };
             DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
             Solver Solver = Solver.Builder
-                .Solve(2, Function, Stiffness)
+                .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
                 .UsingArcLengthScheme(0.05)
@@ -174,7 +174,7 @@ namespace NonLinearEquationsSolver
             List<LoadState> states = Solver.Broadcast().TakeWhile(x => x.Lambda <= 10).ToList();
 
             // ASSERT
-            AssertSolutionsAreCorrect(Function, force, states);
+            AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
         void AssertSolutionIsCorrect(Vector<double> solution)
@@ -186,7 +186,10 @@ namespace NonLinearEquationsSolver
             }
         }
 
-        void AssertSolutionsAreCorrect(Func<Vector<double>, Vector<double>> reaction, Vector<double> force, List<LoadState> states)
+        void AssertSolutionsAreCorrect(
+            Func<Vector<double>, Vector<double>> reaction
+            , Vector<double> force
+            , List<LoadState> states)
         {
             foreach (LoadState state in states)
             {
@@ -195,6 +198,10 @@ namespace NonLinearEquationsSolver
             }
         }
 
-        void AssertAreCloseEnough(Vector<double> v1, Vector<double> v2, double tolerance) => Assert.True((v1 - v2).Norm(2) <= tolerance);
+        void AssertAreCloseEnough(
+            Vector<double> v1
+            , Vector<double> v2
+            , double tolerance)
+            => Assert.True((v1 - v2).Norm(2) <= tolerance);
     }
 }

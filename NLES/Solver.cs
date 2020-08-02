@@ -14,7 +14,7 @@ namespace NLES
         internal LoadState State { get; set; }
         internal Predictor Predictor { get; set; } = new Predictor();
         internal Corrector Corrector { get; set; } = new Corrector();
-        internal StructureInfo Info { get; set; }
+        internal StructureInfo Info { get; set; } = new StructureInfo();
 
         public static SolverBuilder Builder => new SolverBuilder();
 

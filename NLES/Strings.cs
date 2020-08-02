@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace NLES
 {
     internal static class Strings
     {
+        public static string StiffnessMustBeDefined => "Stiffness must be defined.";
         internal static string MaxNumberOfIterationsReached => "Maximum number of iterations reached.";
         public static string LoadIncrementLargerThanZero => "The load factor increment must be larger than 0.";
         public static string DegreesOfFreedomLargerThanZero => "The system must be at least 1 degree of freedom.";
@@ -14,5 +16,6 @@ namespace NLES
         public static string TolerancesLargerThanZero => "Tolerances must be larger than 0.";
         public static string MaximumNumberOfIterationsLargerThanZero =>
             "The maximum number of iterations must be larger than 0.";
+        public static string ReactionMustBeDefined => "Reaction must be defined.";
     }
 }

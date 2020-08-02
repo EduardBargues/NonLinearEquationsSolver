@@ -77,7 +77,7 @@ namespace NLES.Correction
             Vector<double> reaction = info.Reaction(state.Displacement);
             Vector<double> equilibrium = info.InitialLoad + state.Lambda * info.ReferenceLoad - reaction;
             Vector<double> dur = stiffnessMatrix.Solve(equilibrium);
-            Result<LoadIncrementalState> incrementalStateResult = Scheme.GetCorrection(state, prediction, info, dut, dur);
+            Result<LoadIncrementalState> incrementalStateResult = Scheme.Correct(state, prediction, info, dut, dur);
 
             return incrementalStateResult;
         }

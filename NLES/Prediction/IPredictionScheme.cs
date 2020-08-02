@@ -4,6 +4,6 @@ namespace NLES.Prediction
 {
     internal interface IPredictionScheme
     {
-        double GetPrediction(Vector<double> Dvt, Vector<double> fr);
+        double Predict(Vector<double> Dvt, Vector<double> fr);
     }
 }
