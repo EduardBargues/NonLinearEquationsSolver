@@ -4,16 +4,16 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace NLES
 {
-    public partial class Solver
+    public partial class NonLinearSolver
     {
         public class SolverBuilder
         {
-            protected Solver Solver = new Solver();
+            protected NonLinearSolver Solver = new NonLinearSolver();
 
             public SolverBuilderStructure Solve(
                 int degreesOfFreedom
                 , Func<Vector<double>, Vector<double>> reaction
-                , Func<Vector<double>, Matrix<double>> stiffness) => new SolverBuilderStructure(degreesOfFreedom, Solver, reaction, stiffness);
+                , Func<Vector<double>, ILinearSolver> stiffness) => new SolverBuilderStructure(degreesOfFreedom, Solver, reaction, stiffness);
 
             public SolverBuilderIncrementalLoad Under(Vector<double> referenceLoad) => new SolverBuilderIncrementalLoad(Solver, referenceLoad);
 
@@ -37,7 +37,7 @@ namespace NLES
                 return this;
             }
 
-            public Solver Build() => Solver;
+            public NonLinearSolver Build() => Solver;
         }
     }
 }

@@ -7,6 +7,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using NLES;
 using NLES.Correction;
 using NLES.Correction.Methods;
+using NLES.Tests;
 
 using Xunit;
 
@@ -20,7 +21,8 @@ namespace NonLinearEquationsSolver
             //Given 
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2);
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2));
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
             Vector<double> initialDisplacement = new DenseVector(2);
             double initialLoadFactor = 1;
@@ -33,7 +35,7 @@ namespace NonLinearEquationsSolver
             int maxIter = 10;
 
             // When
-            Solver solver = Solver.Builder
+            NonLinearSolver solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(referenceLoad)
                 .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
@@ -62,7 +64,8 @@ namespace NonLinearEquationsSolver
             //Given 
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2);
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2));
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
             Vector<double> initialDisplacement = new DenseVector(2);
             double initialLoadFactor = 1;
@@ -75,7 +78,7 @@ namespace NonLinearEquationsSolver
             int maxIter = 10;
 
             // When
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(referenceLoad)
                 .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
@@ -104,7 +107,8 @@ namespace NonLinearEquationsSolver
             //Given 
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2);
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2));
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
             Vector<double> initialDisplacement = new DenseVector(2);
             double initialLoadFactor = 1;
@@ -116,7 +120,7 @@ namespace NonLinearEquationsSolver
             double dlambda = 0.1;
 
             // When
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(referenceLoad)
                 .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
@@ -153,8 +157,8 @@ namespace NonLinearEquationsSolver
             try
             {
                 // When
-                Solver Solver = Solver.Builder
-                    .Solve(2, v => v, v => new DenseMatrix(2))
+                NonLinearSolver Solver = NonLinearSolver.Builder
+                    .Solve(2, v => v, v => new LinearSolverForTesting(new DenseMatrix(2)))
                     .Under(referenceLoad)
                     .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
                     .UntilTolerancesReached(dispTol, eqTol, enTol)
@@ -175,7 +179,8 @@ namespace NonLinearEquationsSolver
             //Given 
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2);
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2));
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
             Vector<double> initialDisplacement = new DenseVector(2);
             double initialLoadFactor = 1;
@@ -183,7 +188,7 @@ namespace NonLinearEquationsSolver
             double dlambda = 0.1;
 
             // When
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(referenceLoad)
                 .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
@@ -207,7 +212,8 @@ namespace NonLinearEquationsSolver
             //Given 
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2);
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2));
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
             Vector<double> initialDisplacement = new DenseVector(2);
             double initialLoadFactor = 1;
@@ -217,7 +223,7 @@ namespace NonLinearEquationsSolver
             try
             {
                 // When
-                Solver Solver = Solver.Builder
+                NonLinearSolver Solver = NonLinearSolver.Builder
                     .Solve(2, Reaction, Stiffness)
                     .Under(referenceLoad)
                     .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)
@@ -237,7 +243,8 @@ namespace NonLinearEquationsSolver
             //Given 
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2);
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2));
             Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
             Vector<double> initialDisplacement = new DenseVector(2);
             double initialLoadFactor = 1;
@@ -247,7 +254,7 @@ namespace NonLinearEquationsSolver
             try
             {
                 // When
-                Solver Solver = Solver.Builder
+                NonLinearSolver Solver = NonLinearSolver.Builder
                     .Solve(2, Reaction, Stiffness)
                     .Under(referenceLoad)
                     .WithInitialConditions(initialLoadFactor, initialLoad, initialDisplacement)

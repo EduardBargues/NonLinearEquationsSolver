@@ -5,12 +5,12 @@ using NLES.Prediction;
 
 namespace NLES
 {
-    public partial class Solver
+    public partial class NonLinearSolver
     {
         public class SolverBuilderSchemeArcLength : SolverBuilder
         {
 
-            public SolverBuilderSchemeArcLength(Solver solver, double radius)
+            public SolverBuilderSchemeArcLength(NonLinearSolver solver, double radius)
             {
                 if (radius <= 0)
                 {

@@ -2,11 +2,11 @@
 
 namespace NLES
 {
-    public partial class Solver
+    public partial class NonLinearSolver
     {
         public class SolverBuilderStopCondition : SolverBuilder
         {
-            public SolverBuilderStopCondition(Solver solver, double displacementTolerance, double equilibriumTolerance, double energyTolerance)
+            public SolverBuilderStopCondition(NonLinearSolver solver, double displacementTolerance, double equilibriumTolerance, double energyTolerance)
             {
                 if (displacementTolerance <= 0 || equilibriumTolerance <= 0 || energyTolerance <= 0)
                 {

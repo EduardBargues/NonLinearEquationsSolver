@@ -4,12 +4,12 @@ using NLES.Prediction;
 
 namespace NLES
 {
-    public partial class Solver
+    public partial class NonLinearSolver
     {
         public class SolverBuilderSchemeStandardNewtonRaphson : SolverBuilder
         {
 
-            public SolverBuilderSchemeStandardNewtonRaphson(Solver solver, double dlambda)
+            public SolverBuilderSchemeStandardNewtonRaphson(NonLinearSolver solver, double dlambda)
             {
                 if (dlambda <= 0)
                 {

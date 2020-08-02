@@ -72,7 +72,7 @@ namespace NLES.Correction
 
         Result<LoadIncrementalState> GetCorrection(LoadState state, LoadIncrementalState prediction, StructureInfo info)
         {
-            Matrix<double> stiffnessMatrix = info.Stiffness(state.Displacement);
+            ILinearSolver stiffnessMatrix = info.Stiffness(state.Displacement);
             Vector<double> dut = stiffnessMatrix.Solve(info.ReferenceLoad);
             Vector<double> reaction = info.Reaction(state.Displacement);
             Vector<double> equilibrium = info.InitialLoad + state.Lambda * info.ReferenceLoad - reaction;
