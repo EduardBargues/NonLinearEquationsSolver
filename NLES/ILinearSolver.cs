@@ -13,16 +13,10 @@ namespace NLES
         /// <param name="input"></param>
         /// <returns></returns>
         Vector<double> Solve(Vector<double> input);
-        
-        
+             
         /// Gets a value indicating whether the solver is initialized.
         /// </summary>
         bool IsInitialized { get; }
-
-        /// <summary>
-        /// Gets the type of the solver.
-        /// </summary>
-        //BuiltInSolverType SolverType { get; }
 
         /// <summary>
         /// Initializes the solver regarding <see cref="A" /> matrix.
