@@ -7,6 +7,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 using NLES;
 using NLES.Contracts;
+using NLES.Tests;
 using Xunit;
 
 namespace NonLinearEquationsSolver
@@ -22,9 +23,10 @@ namespace NonLinearEquationsSolver
             // ARRANGE
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 });
             DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .Build();
@@ -42,10 +44,11 @@ namespace NonLinearEquationsSolver
             // ARRANGE
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 });
             DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
             double inc = 1e-2;
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .UsingStandardNewtonRaphsonScheme(inc)
@@ -65,10 +68,11 @@ namespace NonLinearEquationsSolver
             // ARRANGE
             static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 };
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 });
             DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
             double radius = 1e-2;
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .UsingArcLengthScheme(radius)
@@ -91,15 +95,16 @@ namespace NonLinearEquationsSolver
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
             };
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2)
-            {
-                [0, 0] = 2 * u[0],
-                [0, 1] = 4 * u[1],
-                [1, 0] = 4 * u[0],
-                [1, 1] = 2 * u[1]
-            };
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2)
+                {
+                    [0, 0] = 2 * u[0],
+                    [0, 1] = 4 * u[1],
+                    [1, 0] = 4 * u[0],
+                    [1, 1] = 2 * u[1]
+                });
             DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
@@ -122,15 +127,16 @@ namespace NonLinearEquationsSolver
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
             };
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2)
-            {
-                [0, 0] = 2 * u[0],
-                [0, 1] = 4 * u[1],
-                [1, 0] = 4 * u[0],
-                [1, 1] = 2 * u[1]
-            };
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2)
+                {
+                    [0, 0] = 2 * u[0],
+                    [0, 1] = 4 * u[1],
+                    [1, 0] = 4 * u[0],
+                    [1, 1] = 2 * u[1]
+                });
             DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
@@ -154,15 +160,16 @@ namespace NonLinearEquationsSolver
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
             };
 
-            static Matrix<double> Stiffness(Vector<double> u) => new DenseMatrix(2, 2)
-            {
-                [0, 0] = 2 * u[0],
-                [0, 1] = 4 * u[1],
-                [1, 0] = 4 * u[0],
-                [1, 1] = 2 * u[1]
-            };
+            static ILinearSolver Stiffness(Vector<double> u)
+                => new LinearSolverForTesting(new DenseMatrix(2, 2)
+                {
+                    [0, 0] = 2 * u[0],
+                    [0, 1] = 4 * u[1],
+                    [1, 0] = 4 * u[0],
+                    [1, 1] = 2 * u[1]
+                });
             DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
-            Solver Solver = Solver.Builder
+            NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
                 .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))

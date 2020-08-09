@@ -3,11 +3,11 @@ using NLES.Contracts;
 
 namespace NLES
 {
-    public partial class Solver
+    public partial class NonLinearSolver
     {
         public class SolverBuilderIncrementalLoad : SolverBuilder
         {
-            public SolverBuilderIncrementalLoad(Solver solver, Vector<double> referenceLoad)
+            public SolverBuilderIncrementalLoad(NonLinearSolver solver, Vector<double> referenceLoad)
             {
                 Solver = solver;
                 Solver.Info.ReferenceLoad = referenceLoad;

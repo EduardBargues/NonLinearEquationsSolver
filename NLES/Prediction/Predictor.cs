@@ -11,7 +11,7 @@ namespace NLES.Prediction
         internal LoadIncrementalState Predict(LoadState state, double initialStiffness, StructureInfo info)
         {
             Vector<double> equilibrium = info.InitialLoad + state.Lambda * info.ReferenceLoad - info.Reaction(state.Displacement);
-            Matrix<double> mK = info.Stiffness(state.Displacement);
+            ILinearSolver mK = info.Stiffness(state.Displacement);
             Vector<double> Dvt = mK.Solve(info.ReferenceLoad);
             Vector<double> Dvr = mK.Solve(equilibrium);
             double bergam = GetBergamParameter(initialStiffness, Dvt, info);

@@ -5,15 +5,15 @@ using System;
 
 namespace NLES
 {
-    public partial class Solver
+    public partial class NonLinearSolver
     {
         public class SolverBuilderStructure : SolverBuilder
         {
             public SolverBuilderStructure(
                 int degreesOfFreedom
-                , Solver solver
+                , NonLinearSolver solver
                 , Func<Vector<double>, Vector<double>> reaction
-                , Func<Vector<double>, Matrix<double>> stiffness)
+                , Func<Vector<double>, ILinearSolver> stiffness)
             {
                 CheckDregreesOfFreedom(degreesOfFreedom);
                 CheckReaction(reaction);
@@ -31,7 +31,7 @@ namespace NLES
                 Solver.Info.Reaction = reaction;
             }
 
-            private static void CheckStiffness(Func<Vector<double>, Matrix<double>> stiffness)
+            private static void CheckStiffness(Func<Vector<double>, ILinearSolver> stiffness)
             {
                 if (stiffness == null)
                 {
