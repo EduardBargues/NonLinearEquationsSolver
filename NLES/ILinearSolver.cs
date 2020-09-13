@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-
+﻿
 namespace NLES
 {
     /// <summary>
@@ -12,6 +11,6 @@ namespace NLES
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Vector<double> Solve(Vector<double> input);
+        Vector Solve(Vector input);
     }
 }

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Linq;
-
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-
 using NLES;
 using NLES.Correction;
 using NLES.Correction.Methods;
 using NLES.Tests;
 
 using Xunit;
+using Vector = NLES.Vector;
 
 namespace NonLinearEquationsSolver
 {
@@ -19,14 +17,14 @@ namespace NonLinearEquationsSolver
         public void RestoringArcLengthSolverIsCorrectlyBuild()
         {
             //Given 
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
+            static Vector Reaction(Vector u) => new Vector(2);
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2));
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
             double dispTol = 1e-3;
             double eqTol = 1e-3;
             double enTol = 1e-3;
@@ -62,14 +60,14 @@ namespace NonLinearEquationsSolver
         public void AngleArcLengthSolverIsCorrectlyBuild()
         {
             //Given 
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
+            static Vector Reaction(Vector u) => new Vector(2);
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2));
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
             double dispTol = 1e-3;
             double eqTol = 1e-3;
             double enTol = 1e-3;
@@ -105,14 +103,14 @@ namespace NonLinearEquationsSolver
         public void StandardSolverIsCorrectlyBuild()
         {
             //Given 
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
+            static Vector Reaction(Vector u) => new Vector(2);
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2));
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
             double dispTol = 1e-3;
             double eqTol = 1e-3;
             double enTol = 1e-3;
@@ -144,10 +142,10 @@ namespace NonLinearEquationsSolver
         public void StandardSolverWithoutReactionDoesNotLaunchException()
         {
             //Given 
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
             double dispTol = 1e-3;
             double eqTol = 1e-3;
             double enTol = 1e-3;
@@ -177,14 +175,14 @@ namespace NonLinearEquationsSolver
         public void StandardSolverWithoutDefinedStopConditionsHasDefaultStopConditions()
         {
             //Given 
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
+            static Vector Reaction(Vector u) => new Vector(2);
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2));
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
             double dlambda = 0.1;
 
             // When
@@ -210,14 +208,14 @@ namespace NonLinearEquationsSolver
         public void StandardSolverWithoutDefinedLoadFactorIncrementLaunchesException()
         {
             //Given 
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
+            static Vector Reaction(Vector u) => new Vector(2);
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2));
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
 
             bool exceptionLaunched = false;
             try
@@ -241,14 +239,14 @@ namespace NonLinearEquationsSolver
         public void ArcLengthSolverWithoutDefinedRadiusLaunchesException()
         {
             //Given 
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2);
+            static Vector Reaction(Vector u) => new Vector(2);
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2));
-            Vector<double> initialLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
-            Vector<double> initialDisplacement = new DenseVector(2);
+            Vector initialLoad = new Vector(2) { [0] = 1, [1] = 1 };
+            Vector initialDisplacement = new Vector(2);
             double initialLoadFactor = 1;
-            Vector<double> referenceLoad = new DenseVector(2) { [0] = 1, [1] = 1 };
+            Vector referenceLoad = new Vector(2) { [0] = 1, [1] = 1 };
 
             bool exceptionLaunched = false;
             try

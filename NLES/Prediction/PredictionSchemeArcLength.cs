@@ -1,5 +1,4 @@
 ﻿using System;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace NLES.Prediction
 {
@@ -11,7 +10,7 @@ namespace NLES.Prediction
 
         internal PredictionSchemeArcLength(double radius) => Radius = radius;
 
-        public double Predict(Vector<double> Dvt, Vector<double> fr)
+        public double Predict(Vector Dvt, Vector fr)
         {
             double dispDotProduct = Dvt.DotProduct(Dvt);
             double forceDotProduct = fr.DotProduct(fr);

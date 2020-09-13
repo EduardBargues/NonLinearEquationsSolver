@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra;
 using NLES.Contracts;
 using NLES.Correction.Methods;
 
@@ -18,8 +17,8 @@ namespace NLES.Correction
         public Result<LoadIncrementalState> Correct(LoadState state,
                                                    LoadIncrementalState prediction,
                                                    StructureInfo info,
-                                                   Vector<double> dut,
-                                                   Vector<double> dur)
+                                                   Vector dut,
+                                                   Vector dur)
         {
             Result<LoadIncrementalState[]> candidates = GetCandidates(dut, dur, prediction, info);
 
@@ -34,8 +33,8 @@ namespace NLES.Correction
                 };
         }
 
-        Result<LoadIncrementalState[]> GetCandidates(Vector<double> dut,
-                                                         Vector<double> dur,
+        Result<LoadIncrementalState[]> GetCandidates(Vector dut,
+                                                         Vector dur,
                                                          LoadIncrementalState prediction,
                                                          StructureInfo info)
         {

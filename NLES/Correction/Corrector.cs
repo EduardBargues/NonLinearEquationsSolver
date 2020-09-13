@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using MathNet.Numerics.LinearAlgebra;
-
 using NLES.Contracts;
 
 namespace NLES.Correction
@@ -56,9 +54,9 @@ namespace NLES.Correction
 
         IEnumerable<double> GetErrors(LoadState newState, LoadState oldState, StructureInfo info)
         {
-            Vector<double> reaction = info.Reaction(newState.Displacement);
-            Vector<double> equilibrium = info.InitialLoad + newState.Lambda * info.ReferenceLoad - reaction;
-            Vector<double> incrementDisplacement = newState.Displacement - oldState.Displacement;
+            Vector reaction = info.Reaction(newState.Displacement);
+            Vector equilibrium = info.InitialLoad + newState.Lambda * info.ReferenceLoad - reaction;
+            Vector incrementDisplacement = newState.Displacement - oldState.Displacement;
 
             yield return incrementDisplacement.Norm(2) / newState.Displacement.Norm(2);
             yield return equilibrium.Norm(2) / info.ReferenceLoad.Norm(2);
@@ -73,10 +71,10 @@ namespace NLES.Correction
         Result<LoadIncrementalState> GetCorrection(LoadState state, LoadIncrementalState prediction, StructureInfo info)
         {
             ILinearSolver stiffnessMatrix = info.Stiffness(state.Displacement);
-            Vector<double> dut = stiffnessMatrix.Solve(info.ReferenceLoad);
-            Vector<double> reaction = info.Reaction(state.Displacement);
-            Vector<double> equilibrium = info.InitialLoad + state.Lambda * info.ReferenceLoad - reaction;
-            Vector<double> dur = stiffnessMatrix.Solve(equilibrium);
+            Vector dut = stiffnessMatrix.Solve(info.ReferenceLoad);
+            Vector reaction = info.Reaction(state.Displacement);
+            Vector equilibrium = info.InitialLoad + state.Lambda * info.ReferenceLoad - reaction;
+            Vector dur = stiffnessMatrix.Solve(equilibrium);
             Result<LoadIncrementalState> incrementalStateResult = Scheme.Correct(state, prediction, info, dut, dur);
 
             return incrementalStateResult;

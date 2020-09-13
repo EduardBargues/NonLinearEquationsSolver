@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-using MathNet.Numerics.LinearAlgebra;
-
 using NLES.Contracts;
 using NLES.Correction;
 using NLES.Prediction;
@@ -22,7 +20,7 @@ namespace NLES
         public IEnumerable<LoadState> Broadcast()
         {
             ILinearSolver mK0 = Info.Stiffness(State.Displacement);
-            Vector<double> Dv0 = mK0.Solve(Info.ReferenceLoad);
+            Vector Dv0 = mK0.Solve(Info.ReferenceLoad);
             double k0 = Info.ReferenceLoad.DotProduct(Dv0);
             while (true)
             {

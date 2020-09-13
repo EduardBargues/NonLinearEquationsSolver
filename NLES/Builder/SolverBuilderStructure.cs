@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
-using NLES.Contracts;
+﻿using NLES.Contracts;
 using System;
 
 namespace NLES
@@ -12,26 +10,26 @@ namespace NLES
             public SolverBuilderStructure(
                 int degreesOfFreedom
                 , NonLinearSolver solver
-                , Func<Vector<double>, Vector<double>> reaction
-                , Func<Vector<double>, ILinearSolver> stiffness)
+                , Func<Vector, Vector> reaction
+                , Func<Vector, ILinearSolver> stiffness)
             {
                 CheckDregreesOfFreedom(degreesOfFreedom);
                 CheckReaction(reaction);
                 CheckStiffness(stiffness);
 
                 Solver = solver;
-                Solver.State = new LoadState(0, new DenseVector(degreesOfFreedom));
+                Solver.State = new LoadState(0, new Vector(degreesOfFreedom));
                 Solver.Info = new StructureInfo
                 {
-                    InitialLoad = new DenseVector(degreesOfFreedom),
+                    InitialLoad = new Vector(degreesOfFreedom),
                     Reaction = reaction,
-                    ReferenceLoad = new DenseVector(degreesOfFreedom),
+                    ReferenceLoad = new Vector(degreesOfFreedom),
                     Stiffness = stiffness,
                 };
                 Solver.Info.Reaction = reaction;
             }
 
-            private static void CheckStiffness(Func<Vector<double>, ILinearSolver> stiffness)
+            private static void CheckStiffness(Func<Vector, ILinearSolver> stiffness)
             {
                 if (stiffness == null)
                 {
@@ -39,7 +37,7 @@ namespace NLES
                 }
             }
 
-            private static void CheckReaction(Func<Vector<double>, Vector<double>> reaction)
+            private static void CheckReaction(Func<Vector, Vector> reaction)
             {
                 if (reaction == null)
                 {
