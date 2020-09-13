@@ -1,7 +1,5 @@
 ﻿using System;
 
-using MathNet.Numerics.LinearAlgebra;
-
 namespace NLES
 {
     public partial class NonLinearSolver
@@ -12,10 +10,10 @@ namespace NLES
 
             public SolverBuilderStructure Solve(
                 int degreesOfFreedom
-                , Func<Vector<double>, Vector<double>> reaction
-                , Func<Vector<double>, ILinearSolver> stiffness) => new SolverBuilderStructure(degreesOfFreedom, Solver, reaction, stiffness);
+                , Func<Vector, Vector> reaction
+                , Func<Vector, ILinearSolver> stiffness) => new SolverBuilderStructure(degreesOfFreedom, Solver, reaction, stiffness);
 
-            public SolverBuilderIncrementalLoad Under(Vector<double> referenceLoad) => new SolverBuilderIncrementalLoad(Solver, referenceLoad);
+            public SolverBuilderIncrementalLoad Under(Vector referenceLoad) => new SolverBuilderIncrementalLoad(Solver, referenceLoad);
 
             public SolverBuilderSchemeStandardNewtonRaphson UsingStandardNewtonRaphsonScheme(double loadFactorIncrement)
                 => new SolverBuilderSchemeStandardNewtonRaphson(Solver, loadFactorIncrement);

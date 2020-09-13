@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-
-using NLES.Contracts;
+﻿using NLES.Contracts;
 
 namespace NLES.Correction
 {
@@ -10,8 +8,8 @@ namespace NLES.Correction
             LoadState state
             , LoadIncrementalState prediction
             , StructureInfo info
-            , Vector<double> dut
-            , Vector<double> dur) => new Result<LoadIncrementalState>()
+            , Vector dut
+            , Vector dur) => new Result<LoadIncrementalState>()
             {
                 Value = new LoadIncrementalState(0, dur)
             };

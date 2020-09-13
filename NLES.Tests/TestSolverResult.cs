@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-
 using NLES;
 using NLES.Contracts;
 using NLES.Tests;
 using Xunit;
+using Vector = NLES.Vector;
 
 namespace NonLinearEquationsSolver
 {
@@ -21,11 +19,11 @@ namespace NonLinearEquationsSolver
         public void SolveLinearFunction()
         {
             // ARRANGE
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+            static Vector Reaction(Vector u) => new Vector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 });
-            DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
+            Vector force = new Vector(2) { [0] = 1, [1] = 3 };
             NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
@@ -42,11 +40,11 @@ namespace NonLinearEquationsSolver
         public void SolveLinearFunctionSmallIncrements()
         {
             // ARRANGE
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+            static Vector Reaction(Vector u) => new Vector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 });
-            DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
+            Vector force = new Vector(2) { [0] = 1, [1] = 3 };
             double inc = 1e-2;
             NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
@@ -66,11 +64,11 @@ namespace NonLinearEquationsSolver
         public void SolveLinearFunctionArcLength()
         {
             // ARRANGE
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
+            static Vector Reaction(Vector u) => new Vector(2) { [0] = u[0], [1] = u[0] + 2 * u[1] };
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2) { [0, 0] = 1, [1, 0] = 1, [1, 1] = 2 });
-            DenseVector force = new DenseVector(2) { [0] = 1, [1] = 3 };
+            Vector force = new Vector(2) { [0] = 1, [1] = 3 };
             double radius = 1e-2;
             NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
@@ -89,13 +87,13 @@ namespace NonLinearEquationsSolver
         public void SolveQuadraticFunction()
         {
             // ARRANGE
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2)
+            static Vector Reaction(Vector u) => new Vector(2)
             {
                 [0] = u[0] * u[0] + 2 * u[1] * u[1],
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
             };
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2)
                 {
                     [0, 0] = 2 * u[0],
@@ -103,11 +101,11 @@ namespace NonLinearEquationsSolver
                     [1, 0] = 4 * u[0],
                     [1, 1] = 2 * u[1]
                 });
-            DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
+            Vector force = new Vector(2) { [0] = 3, [1] = 3 };
             NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
-                .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
+                .WithInitialConditions(0.1, new Vector(2, 0), new Vector(2, 1))
                 .Build();
 
             // ACT
@@ -121,13 +119,13 @@ namespace NonLinearEquationsSolver
         public void SolveQuadraticFunctionSmallIncrements()
         {
             // ARRANGE
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2)
+            static Vector Reaction(Vector u) => new Vector(2)
             {
                 [0] = u[0] * u[0] + 2 * u[1] * u[1],
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
             };
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2)
                 {
                     [0, 0] = 2 * u[0],
@@ -135,11 +133,11 @@ namespace NonLinearEquationsSolver
                     [1, 0] = 4 * u[0],
                     [1, 1] = 2 * u[1]
                 });
-            DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
+            Vector force = new Vector(2) { [0] = 3, [1] = 3 };
             NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
-                .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
+                .WithInitialConditions(0.1, new Vector(2, 0), new Vector(2, 1))
                 .UsingStandardNewtonRaphsonScheme(0.01)
                 .Build();
 
@@ -154,13 +152,13 @@ namespace NonLinearEquationsSolver
         public void SolveQuadraticFunctionArcLength()
         {
             // ARRANGE
-            static Vector<double> Reaction(Vector<double> u) => new DenseVector(2)
+            static Vector Reaction(Vector u) => new Vector(2)
             {
                 [0] = u[0] * u[0] + 2 * u[1] * u[1],
                 [1] = 2 * u[0] * u[0] + u[1] * u[1]
             };
 
-            static ILinearSolver Stiffness(Vector<double> u)
+            static ILinearSolver Stiffness(Vector u)
                 => new LinearSolverForTesting(new DenseMatrix(2, 2)
                 {
                     [0, 0] = 2 * u[0],
@@ -168,11 +166,11 @@ namespace NonLinearEquationsSolver
                     [1, 0] = 4 * u[0],
                     [1, 1] = 2 * u[1]
                 });
-            DenseVector force = new DenseVector(2) { [0] = 3, [1] = 3 };
+            Vector force = new Vector(2) { [0] = 3, [1] = 3 };
             NonLinearSolver Solver = NonLinearSolver.Builder
                 .Solve(2, Reaction, Stiffness)
                 .Under(force)
-                .WithInitialConditions(0.1, DenseVector.Create(2, 0), DenseVector.Create(2, 1))
+                .WithInitialConditions(0.1, new Vector(2, 0), new Vector(2, 1))
                 .UsingArcLengthScheme(0.05)
                 .NormalizeLoadWith(0.01)
                 .Build();
@@ -184,9 +182,9 @@ namespace NonLinearEquationsSolver
             AssertSolutionsAreCorrect(Reaction, force, states);
         }
 
-        void AssertSolutionIsCorrect(Vector<double> solution)
+        void AssertSolutionIsCorrect(Vector solution)
         {
-            double first = solution.First();
+            double first = solution[0];
             foreach (double d in solution)
             {
                 Assert.Equal(first, d, decimalsPrecision);
@@ -194,8 +192,8 @@ namespace NonLinearEquationsSolver
         }
 
         void AssertSolutionsAreCorrect(
-            Func<Vector<double>, Vector<double>> reaction
-            , Vector<double> force
+            Func<Vector, Vector> reaction
+            , Vector force
             , List<LoadState> states)
         {
             foreach (LoadState state in states)
@@ -206,8 +204,8 @@ namespace NonLinearEquationsSolver
         }
 
         void AssertAreCloseEnough(
-            Vector<double> v1
-            , Vector<double> v2
+            Vector v1
+            , Vector v2
             , double tolerance)
             => Assert.True((v1 - v2).Norm(2) <= tolerance);
     }

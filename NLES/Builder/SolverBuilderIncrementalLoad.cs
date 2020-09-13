@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using NLES.Contracts;
+﻿using NLES.Contracts;
 
 namespace NLES
 {
@@ -7,13 +6,13 @@ namespace NLES
     {
         public class SolverBuilderIncrementalLoad : SolverBuilder
         {
-            public SolverBuilderIncrementalLoad(NonLinearSolver solver, Vector<double> referenceLoad)
+            public SolverBuilderIncrementalLoad(NonLinearSolver solver, Vector referenceLoad)
             {
                 Solver = solver;
                 Solver.Info.ReferenceLoad = referenceLoad;
             }
 
-            public SolverBuilderIncrementalLoad WithInitialConditions(double lambda, Vector<double> load, Vector<double> displacement)
+            public SolverBuilderIncrementalLoad WithInitialConditions(double lambda, Vector load, Vector displacement)
             {
                 Solver.Info.InitialLoad = load;
                 Solver.State = new LoadState(lambda, displacement);

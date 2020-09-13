@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-
+﻿
 namespace NLES.Prediction
 {
     internal class PredictionSchemeStandard : IPredictionScheme
@@ -8,6 +7,6 @@ namespace NLES.Prediction
 
         internal PredictionSchemeStandard(double dlambda) => DLambda = dlambda;
 
-        public double Predict(Vector<double> Dvt, Vector<double> fr) => DLambda;
+        public double Predict(Vector Dvt, Vector fr) => DLambda;
     }
 }

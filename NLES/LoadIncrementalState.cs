@@ -1,14 +1,13 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-
+﻿
 namespace NLES
 {
     internal class LoadIncrementalState
     {
         internal double IncrementLambda { get; set; }
 
-        internal Vector<double> IncrementDisplacement { get; set; }
+        internal Vector IncrementDisplacement { get; set; }
 
-        internal LoadIncrementalState(double incrementLambda, Vector<double> incrementDisplacement)
+        internal LoadIncrementalState(double incrementLambda, Vector incrementDisplacement)
         {
             IncrementLambda = incrementLambda;
             IncrementDisplacement = incrementDisplacement;

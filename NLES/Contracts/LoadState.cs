@@ -1,13 +1,12 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-
+﻿
 namespace NLES.Contracts
 {
     public struct LoadState
     {
         public double Lambda { get; set; }
-        public Vector<double> Displacement { get; set; }
+        public Vector Displacement { get; set; }
 
-        internal LoadState(double lambda, Vector<double> displacement)
+        internal LoadState(double lambda, Vector displacement)
         {
             Lambda = lambda;
             Displacement = displacement;
