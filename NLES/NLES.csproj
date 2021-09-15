@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>This library aim to provide with an easy-to-use library to solve non-linear systems of equations.</Description>
+    <Authors>Eduard Bargues</Authors>
+    <Company>Eduard Bargues</Company>
+    <PackageProjectUrl>https://github.com/EduardBargues/NonLinearEquationsSolver</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/EduardBargues/NonLinearEquationsSolver</RepositoryUrl>
+    <RepositoryType />
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageTags>arc-length,numerical-methods, solvers, newtonraphson, equation-solver iteration-schemes,newton-raphson,newton-raphson-multivariable, newtons-method,non-linear-eigenproblem,work-control</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
